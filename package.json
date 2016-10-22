@@ -23,12 +23,12 @@
   "author": "houjun",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhouhoujun/development-tool-node/issues"
+    "url": "https://github.com/zhouhoujun/development-tool-web/issues"
   },
   "registry": "jspm",
   "repository": {
     "type": "git",
-    "url": "https://github.com/zhouhoujun/development-tool-node.git"
+    "url": "https://github.com/zhouhoujun/development-tool-web.git"
   },
   "dependencies": {
     "@types/browser-sync": "0.0.34",
@@ -57,12 +57,12 @@
   "devDependencies": {
     "bluebird": "^3.4.1",
     "development-tool": "^0.2.0",
-    "development-tool-node": "^0.1.0",
+    "development-tool-web": "^0.1.0",
     "through2": "^2.0.1",
     "ts-node": "^1.6.0",
     "tslint": "^3.15.1",
     "tslint-stylish": "^2.1.0-beta",
     "zone.js": "^0.6.10"
   },
-  "homepage": "https://github.com/zhouhoujun/development-tool-node#readme"
+  "homepage": "https://github.com/zhouhoujun/development-tool-web#readme"
 }
