@@ -1,6 +1,6 @@
 {
   "name": "development-tool-web",
-  "version": "0.1.0-beta",
+  "version": "0.1.0-beta1",
   "description": "development build tools for node.",
   "main": "./lib/task.js",
   "typings": "./lib/task",
