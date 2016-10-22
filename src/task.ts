@@ -1,15 +1,15 @@
 /// <reference types="mocha"/>
 import * as path from 'path';
 import { WatchEvent } from 'gulp';
-import { Src, Task, TaskNameSequence, IMap, TaskConfig, EnvOption, Operation, TaskOption, tasksInModule, tasksInDir, ITaskDefine } from 'development-tool';
+import { Src, Asserts, Task, IMap, TaskConfig, EnvOption, Operation, TaskOption, ITaskDefine } from 'development-tool';
+import * as chalk from 'chalk';
 
-
-export interface Ng1BuildOption extends TaskOption {
+export interface WebTaskOption extends TaskOption {
     /**
      * karma config File
      * 
      * @type {string}
-     * @memberOf Ng1BuildOption
+     * @memberOf WebTaskOption
      */
     karmaConfigFile?: string;
 
@@ -17,7 +17,7 @@ export interface Ng1BuildOption extends TaskOption {
      * e2e test protractor config file
      * 
      * @type {string}
-     * @memberOf Ng1BuildOption
+     * @memberOf WebTaskOption
      */
     protractorFile?: string;
 
@@ -33,25 +33,9 @@ export interface Ng1BuildOption extends TaskOption {
      * e2e test src.
      * 
      * @type {Src}
-     * @memberOf Ng1BuildOption
+     * @memberOf WebTaskOption
      */
     e2e?: Src;
-
-    /**
-     * js src.
-     * 
-     * @type {Src}
-     * @memberOf Ng1BuildOption
-     */
-    js?: Src;
-
-    /**
-     * js src.
-     * 
-     * @type {Src}
-     * @memberOf Ng1BuildOption
-     */
-    less?: Src;
 
     /**
      * tsconfig for typescript
@@ -78,12 +62,12 @@ export interface Ng1BuildOption extends TaskOption {
     tsWatchChanged?(config: TaskConfig, event: WatchEvent): void;
 
     /**
-     * static asserts.
+     * static asserts config to copy to dist.
      * 
-     * @type {string[]}
-     * @memberOf NodeBuildOption
+     * @type {(IMap<Src | Asserts>)}
+     * @memberOf WebTaskOption
      */
-    asserts?: IMap<Src>;
+    asserts?: IMap<Src | Asserts>;
     /**
      * watch assert file changed.
      * 
@@ -102,29 +86,40 @@ export default <ITaskDefine>{
             oper: oper,
             env: env,
             option: option,
-            runTasks(): TaskNameSequence {
-                let tasks: TaskNameSequence = ['clean'];
+            runTasks(subGroupTask: Src): Src[] {
+                let tasks: Src[] = ['clean'];
                 switch (oper) {
                     case Operation.build:
                         tasks = ['clean', ['copy-asserts', 'tscompile']];
+                        if (subGroupTask) {
+                            tasks.push(subGroupTask);
+                        }
                         if (env.watch) {
                             tasks.push('watch');
                         }
                         break;
                     case Operation.test:
-                    case Operation.e2e:
                     case Operation.release:
-                        tasks = ['clean', ['copy-asserts', 'tscompile'], 'test'];
+                        tasks = ['clean', ['copy-asserts', 'tscompile']];
+                        if (subGroupTask) {
+                            tasks.push(subGroupTask);
+                        }
+                        tasks.push('test');
                         if (env.watch) {
                             tasks.push('watch');
                         }
                         break;
-                    // case Operation.e2e:
-                    //     break;
+                    case Operation.e2e:
+                        console.log(chalk.red('can not support e2e test.'))
+                        break;
                     // case Operation.release:
                     //     break;
                     case Operation.deploy:
-                        tasks = ['clean', ['copy-asserts', 'tscompile'], 'test'];
+                        tasks = ['clean', ['copy-asserts', 'tscompile']];
+                        if (subGroupTask) {
+                            tasks.push(subGroupTask);
+                        }
+                        tasks.push('test');
                         break;
                 }
                 return tasks;
@@ -132,7 +127,7 @@ export default <ITaskDefine>{
         }
     },
 
-    moduleTaskLoader(config: TaskConfig, findInModule: tasksInModule, loadFromDir: tasksInDir): Promise<Task[]> {
+    moduleTaskLoader(config: TaskConfig): Promise<Task[]> {
         let oper = config.oper;
         let taskDirs = [path.join(__dirname, './tasks/build')];
         if (oper >= Operation.test) {
@@ -148,6 +143,6 @@ export default <ITaskDefine>{
         //     taskDirs.push(path.join(__dirname, './tasks/deploy'));
         // }
         console.log('load task from dirs:', taskDirs);
-        return loadFromDir(taskDirs);
+        return config.findTasksInDir(taskDirs);
     }
 };

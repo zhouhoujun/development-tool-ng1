@@ -1,11 +1,11 @@
 import { Gulp, WatchCallback, WatchEvent } from 'gulp';
 import * as _ from 'lodash';
-import { Ng1BuildOption } from '../../task';
-import { TaskConfig } from 'development-tool';
+import { WebTaskOption } from '../../task';
+import { Src, TaskConfig } from 'development-tool';
 // const browserSync = require('browser-sync');
 
 export = (gulp: Gulp, config: TaskConfig) => {
-    let option: Ng1BuildOption = config.option;
+    let option: WebTaskOption = <WebTaskOption>config.option;
     gulp.task('watch', () => {
 
         // watch ts.
@@ -21,7 +21,9 @@ export = (gulp: Gulp, config: TaskConfig) => {
         // watch asserts
         if (option.asserts) {
             _.each(_.keys(option.asserts), f => {
-                gulp.watch(option.asserts[f],
+                let asst = option.asserts[f];
+                let src: Src = (_.isArray(asst) || _.isString(asst)) ? asst : asst.src;
+                gulp.watch(src,
                     [
                         'copy-' + f,
                         (event: WatchEvent) => {

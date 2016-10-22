@@ -1,38 +1,47 @@
 import { Gulp } from 'gulp';
 import * as _ from 'lodash';
-import { Ng1BuildOption } from '../../task';
-import { TaskConfig } from 'development-tool';
-import * as runSequence from 'run-sequence';
+import { WebTaskOption } from '../../task';
+import { Src, TaskConfig } from 'development-tool';
 const cache = require('gulp-cached');
+import * as chalk from 'chalk';
 
 export = (gulp: Gulp, config: TaskConfig) => {
-    let option: Ng1BuildOption = config.option;
+    let option: WebTaskOption = <WebTaskOption>config.option;
     let tasks = [];
     if (option.asserts) {
 
         _.each(_.keys(option.asserts), f => {
-            if (!option.asserts[f]) {
+            let asst = option.asserts[f];
+            if (!asst) {
+                return;
+            }
+
+            let dist: string = config.getDist((_.isArray(asst) || _.isString(asst)) ? option : asst);
+
+            if (!dist) {
                 return;
             }
 
             let tsk = 'copy-' + f;
             tasks.push(tsk);
+            let src: Src = (_.isArray(asst) || _.isString(asst)) ? asst : asst.src;
+
             gulp.task(tsk, () => {
-                gulp.src(option.asserts[f])
+                gulp.src(src)
                     .pipe(cache('assets-' + f))
-                    .pipe(gulp.dest(option.dist));
+                    .pipe(gulp.dest(dist));
             });
         });
     }
 
     // console.log('register copy-asserts task by gulp', tasks);
 
-    gulp.task('copy-asserts', callback => {
+    gulp.task('copy-asserts', () => {
         if (tasks.length > 0) {
-            tasks.push(callback);
-            runSequence.call(runSequence.use(gulp), tasks);
+            return config.runSequence(gulp, tasks);
         } else {
-            callback();
+            console.log(chalk.yellow('has not configed asserts in option.'));
+            return Promise.resolve();
         }
     });
 }

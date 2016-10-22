@@ -5,9 +5,6 @@ Development.create(gulp, __dirname, {
     tasks: {
         src: 'src',
         dist: 'lib',
-        loader: {
-            type: 'module',
-            module: 'development-tool-node'
-        }
+        loader: 'development-tool-node'
     }
 });

@@ -1,14 +1,15 @@
 /// <reference types="gulp" />
-/// <reference types="mocha" />
 import { WatchEvent } from 'gulp';
-import { Src, IMap, TaskConfig, TaskOption, ITaskDefine } from 'development-tool';
-export interface Ng1BuildOption extends TaskOption {
+import { Src, Asserts, IMap, TaskConfig, TaskOption, ITaskDefine } from 'development-tool';
+export interface WebTaskOption extends TaskOption {
+    karmaConfigFile?: string;
+    protractorFile?: string;
     test?: Src;
+    e2e?: Src;
     tsconfig?: string;
     ts?: Src;
     tsWatchChanged?(config: TaskConfig, event: WatchEvent): void;
-    mochaOptions?: MochaSetupOptions;
-    asserts?: IMap<Src>;
+    asserts?: IMap<Src | Asserts>;
     assertWatchChanged?(assert: string, config: TaskConfig, event: WatchEvent): void;
 }
 declare var _default: ITaskDefine;

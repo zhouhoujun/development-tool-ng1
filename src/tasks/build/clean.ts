@@ -5,8 +5,9 @@ let del = require('del');
 
 
 export = (gulp: Gulp, config: TaskConfig) => {
-  // console.log('register clean task by gulp');
+
+  let dist = config.getDist(config.option);
   gulp.task('clean', () => {
-    return del(config.option.dist);
+    return del(dist);
   });
-};
+}

@@ -1,5 +1,5 @@
 {
-  "name": "development-tool-ng1",
+  "name": "development-tool-web",
   "version": "0.0.1",
   "description": "development build tools for node.",
   "main": "./lib/task.js",
@@ -51,8 +51,8 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
-    "development-tool": "0.0.1",
-    "development-tool-node": "0.0.1",
+    "development-tool": "^0.2.0",
+    "development-tool-node": "^0.1.0",
     "through2": "^2.0.1",
     "ts-node": "^1.6.0",
     "tslint": "^3.15.1",
