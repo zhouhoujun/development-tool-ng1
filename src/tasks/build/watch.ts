@@ -2,6 +2,7 @@ import { Gulp, WatchCallback, WatchEvent } from 'gulp';
 import * as _ from 'lodash';
 import { WebTaskOption } from '../../task';
 import { Src, TaskConfig } from 'development-tool';
+import * as browserSync from 'browser-sync';
 // const browserSync = require('browser-sync');
 
 export = (gulp: Gulp, config: TaskConfig) => {
@@ -15,6 +16,7 @@ export = (gulp: Gulp, config: TaskConfig) => {
         }
         watchTsk.push(<WatchCallback>(event: WatchEvent) => {
             option.tsWatchChanged && option.tsWatchChanged(config, event);
+            browserSync.reload();
         });
         gulp.watch(option.ts || (option.src + '/**/*.ts'), watchTsk);
 
@@ -28,6 +30,7 @@ export = (gulp: Gulp, config: TaskConfig) => {
                         'copy-' + f,
                         (event: WatchEvent) => {
                             option.assertWatchChanged && option.assertWatchChanged(f, config, event);
+                            browserSync.reload();
                         }
                     ]);
             });

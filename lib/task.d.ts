@@ -1,7 +1,10 @@
+/// <reference types="browser-sync" />
 /// <reference types="gulp" />
 import { WatchEvent } from 'gulp';
 import { Src, Asserts, IMap, TaskConfig, TaskOption, ITaskDefine } from 'development-tool';
+import { Options } from 'browser-sync';
 export interface WebTaskOption extends TaskOption {
+    browsersync?: Options;
     karmaConfigFile?: string;
     protractorFile?: string;
     test?: Src;

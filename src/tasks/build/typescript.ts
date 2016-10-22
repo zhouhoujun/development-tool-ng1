@@ -2,6 +2,7 @@ import { Gulp } from 'gulp';
 import { WebTaskOption } from '../../task';
 import { Operation, TaskConfig } from 'development-tool';
 import * as path from 'path';
+import * as browserSync from 'browser-sync';
 
 const cache = require('gulp-cached');
 const ts = require('gulp-typescript');
@@ -36,8 +37,8 @@ export = (gulp: Gulp, config: TaskConfig) => {
 
             return merge([
                 // Merge the two output streams, so this task is finished when the IO of both operations are done. 
-                tsResult.dts.pipe(gulp.dest(dist)),
-                tsResult.js.pipe(sourcemaps.write('./sourcemaps')).pipe(gulp.dest(dist))
+                tsResult.dts.pipe(gulp.dest(dist)).pipe(browserSync.stream()),
+                tsResult.js.pipe(sourcemaps.write('./sourcemaps')).pipe(gulp.dest(dist)).pipe(browserSync.stream())
             ]);
         });
     }

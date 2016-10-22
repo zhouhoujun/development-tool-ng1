@@ -3,8 +3,16 @@ import * as path from 'path';
 import { WatchEvent } from 'gulp';
 import { Src, Asserts, Task, IMap, TaskConfig, EnvOption, Operation, TaskOption, ITaskDefine } from 'development-tool';
 import * as chalk from 'chalk';
+import { Options } from 'browser-sync';
 
 export interface WebTaskOption extends TaskOption {
+    /**
+     * browser setting
+     * 
+     * @type {Options}
+     * @memberOf WebTaskOption
+     */
+    browsersync?: Options;
     /**
      * karma config File
      * 

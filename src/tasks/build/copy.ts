@@ -4,6 +4,7 @@ import { WebTaskOption } from '../../task';
 import { Src, TaskConfig } from 'development-tool';
 const cache = require('gulp-cached');
 import * as chalk from 'chalk';
+import * as browserSync from 'browser-sync';
 
 export = (gulp: Gulp, config: TaskConfig) => {
     let option: WebTaskOption = <WebTaskOption>config.option;
@@ -27,9 +28,10 @@ export = (gulp: Gulp, config: TaskConfig) => {
             let src: Src = (_.isArray(asst) || _.isString(asst)) ? asst : asst.src;
 
             gulp.task(tsk, () => {
-                gulp.src(src)
+                return gulp.src(src)
                     .pipe(cache('assets-' + f))
-                    .pipe(gulp.dest(dist));
+                    .pipe(gulp.dest(dist))
+                    .pipe(browserSync.stream());
             });
         });
     }
