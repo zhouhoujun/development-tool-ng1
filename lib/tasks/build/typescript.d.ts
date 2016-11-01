@@ -1,5 +1,4 @@
 /// <reference types="gulp" />
 import { Gulp } from 'gulp';
-import { TaskConfig } from 'development-tool';
-declare var _default: (gulp: Gulp, config: TaskConfig) => void;
+declare var _default: (gulp: Gulp, config: any) => void;
 export = _default;

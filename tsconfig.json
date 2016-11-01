@@ -1,5 +1,5 @@
 {
-  "name": "development-tool-node",
+  "name": "development-tool-web",
   "compilerOptions": {
     "module": "commonjs",
     "target":"es2015",
@@ -22,7 +22,6 @@
     "suppressImplicitAnyIndexErrors": true
   },
   "exclude": [
-    "test",
     "lib",
     "node_modules"    
   ],
