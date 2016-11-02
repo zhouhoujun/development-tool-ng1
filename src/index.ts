@@ -1,6 +1,6 @@
 /// <reference types="mocha"/>
 import * as _ from 'lodash';
-import { ITask, findTasks, ITaskConfig, IEnvOption, Operation, ITaskOption, ITaskDefine, taskdefine } from 'development-core';
+import { ITask, ITaskConfig, IEnvOption, Operation, ITaskOption, ITaskDefine, taskdefine } from 'development-core';
 
 export * from './WebTaskOption';
 
@@ -33,8 +33,10 @@ export class Define implements ITaskDefine {
         return config.findTasks(webTasks)
             .then(tasks => {
                 if (config.env.serve) {
-                    let serTasks = findTasks(webTasks, { group: 'serve', oper: config.oper })
-                    return tasks.concat(serTasks);
+                    return config.findTasks(webTasks, { group: 'serve' })
+                        .then(serTasks => {
+                            return tasks.concat(serTasks || []);
+                        });
                 } else {
                     return tasks;
                 }

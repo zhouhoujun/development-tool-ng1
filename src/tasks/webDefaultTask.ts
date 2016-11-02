@@ -27,7 +27,6 @@ export class WebDefaultTasks implements IDynamicTasks {
             },
             {
                 name: 'test',
-                order: 3,
                 test: true,
                 oper: Operation.test | Operation.release | Operation.deploy,
                 pipe(gulpsrc: ITransform, config: ITaskConfig, dt?: IDynamicTask, callback?: TaskCallback) {
