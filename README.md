@@ -24,7 +24,7 @@ You can `import` modules:
 ```ts
 import * as gulp from 'gulp';
 import  { Development } from 'development-tool';
-import { WebTaskOption } from 'development-tool-web';
+import { IWebTaskOption } from 'development-tool-web';
 
 ```
 
@@ -33,7 +33,7 @@ import { WebTaskOption } from 'development-tool-web';
 ```ts
 Development.create(gulp, __dirname, {
     tasks:[
-        <WebTaskOption>{
+        <IWebTaskOption>{
             src: 'src',
             dist: 'lib',
             // build:'build path',
