@@ -43,6 +43,8 @@ Development.create(gulp, __dirname, {
             // releaseDist: 'release path',
             // depolyDist: 'depoly path'
             asserts:{
+                //ts addation pipe works.
+                ts:{ loader: 'development-assert-ts', pipes: Pipe[] | (config, dist, gulp)=> Pipe[], output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[] },
                 json: 'src/**/*.json',
                 css:'src/common/**/*.css',
                 moduleBcss: ['src/moduleB/**/*.css'],
@@ -58,6 +60,8 @@ Development.create(gulp, __dirname, {
                 },
                 ...
             },
+            pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
+            output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[],
             loader: 'development-tool-web'
         }
     ]

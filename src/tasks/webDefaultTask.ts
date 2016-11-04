@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
-    ITask, ITaskInfo, ITransform, ITaskConfig, IDynamicTask,
+    ITask, ITaskInfo, ITransform, ITaskConfig, IDynamicTaskOption,
     Operation, IDynamicTasks, task, dynamicTask
 } from 'development-core';
 // import * as chalk from 'chalk';
@@ -18,7 +18,7 @@ const del = require('del');
 
 @dynamicTask
 export class WebDefaultTasks implements IDynamicTasks {
-    tasks(): IDynamicTask[] {
+    tasks(): IDynamicTaskOption[] {
         return [
             {
                 name: 'clean',
@@ -29,7 +29,7 @@ export class WebDefaultTasks implements IDynamicTasks {
                 name: 'test',
                 test: true,
                 oper: Operation.test | Operation.release | Operation.deploy,
-                pipe(gulpsrc: ITransform, config: ITaskConfig, dt?: IDynamicTask, callback?: TaskCallback) {
+                pipe(gulpsrc: ITransform, config: ITaskConfig, dt?: IDynamicTaskOption, callback?: TaskCallback) {
                     let option = <IWebTaskOption>config.option;
                     let karmaConfigFile = option.karmaConfigFile || path.join(config.env.root, './karma.conf.js');
                     if (!path.isAbsolute(karmaConfigFile)) {

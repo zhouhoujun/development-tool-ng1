@@ -1,7 +1,7 @@
 /// <reference types="mocha"/>
 import * as _ from 'lodash';
 import * as path from 'path';
-import { IDynamicTask, Operation, IDynamicTasks, dynamicTask } from 'development-core';
+import { IDynamicTaskOption, Operation, IDynamicTasks, dynamicTask } from 'development-core';
 // import * as chalk from 'chalk';
 import { IWebTaskOption } from '../WebTaskOption';
 
@@ -18,7 +18,7 @@ const babel = require('gulp-babel');
 })
 export class TsTasks implements IDynamicTasks {
     tasks() {
-        return <IDynamicTask[]>[
+        return <IDynamicTaskOption[]>[
             {
                 name: 'ts-compile',
                 pipes: [
@@ -59,7 +59,7 @@ export class TsTasks implements IDynamicTasks {
 })
 export class JsTasks implements IDynamicTasks {
     tasks() {
-        return <IDynamicTask[]>[
+        return <IDynamicTaskOption[]>[
             {
                 name: 'js-compile',
                 pipes: [

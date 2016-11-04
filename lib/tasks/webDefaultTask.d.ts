@@ -1,8 +1,8 @@
 /// <reference types="gulp" />
 import { Gulp } from 'gulp';
-import { ITask, ITaskInfo, ITaskConfig, IDynamicTask, IDynamicTasks } from 'development-core';
+import { ITask, ITaskInfo, ITaskConfig, IDynamicTaskOption, IDynamicTasks } from 'development-core';
 export declare class WebDefaultTasks implements IDynamicTasks {
-    tasks(): IDynamicTask[];
+    tasks(): IDynamicTaskOption[];
 }
 export declare class StartService implements ITask {
     decorator: ITaskInfo;
