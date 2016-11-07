@@ -1,6 +1,6 @@
 /// <reference types="mocha"/>
 import * as _ from 'lodash';
-import { ITask, ITaskConfig, IEnvOption, Operation, ITaskOption, ITaskDefine, taskdefine } from 'development-core';
+import { ITask, ITaskConfig, IEnvOption, ITaskOption, ITaskDefine, taskdefine } from 'development-core';
 
 export * from './WebTaskOption';
 
@@ -8,7 +8,7 @@ import * as webTasks from './tasks/WebDefaultTask';
 
 @taskdefine
 export class Define implements ITaskDefine {
-    loadConfig(oper: Operation, option: ITaskOption, env: IEnvOption): ITaskConfig {
+    loadConfig(option: ITaskOption, env: IEnvOption): ITaskConfig {
         // register default asserts.
         option.asserts = _.extend({
             ts: 'development-assert-ts',
@@ -17,7 +17,6 @@ export class Define implements ITaskDefine {
 
 
         return <ITaskConfig>{
-            oper: oper,
             env: env,
             option: option
         }

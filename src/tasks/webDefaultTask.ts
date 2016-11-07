@@ -23,7 +23,8 @@ export class WebDefaultTasks implements IDynamicTasks {
             {
                 name: 'clean',
                 order: 0,
-                task: (config) => del(config.getDist())
+                oper: Operation.clean | Operation.default,
+                task: (config, dt) => del(config.getSrc(dt, dt))
             },
             {
                 name: 'test',
@@ -47,7 +48,7 @@ export class WebDefaultTasks implements IDynamicTasks {
 
 @task({
     group: 'serve',
-    oper: Operation.build | Operation.test | Operation.e2e | Operation.release
+    oper: Operation.test | Operation.e2e | Operation.default
 })
 export class StartService implements ITask {
     decorator: ITaskInfo;
