@@ -43,8 +43,32 @@ Development.create(gulp, __dirname, {
             // releaseDist: 'release path',
             // depolyDist: 'depoly path'
             asserts:{
-                //ts addation pipe works.
-                ts:{ loader: 'development-assert-ts', pipes: Pipe[] | (config, dist, gulp)=> Pipe[], output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[] },
+                // use IAsserts task to deal with ts file, if src not setting, use  src/**/*.ts
+                // pipes, output is addation pipe work.
+                ts: {
+                    loader: {
+                        module:'development-assert-ts',
+                        // add pipe works for module tasks.
+                        pipe(stream, config, dist, gulp){ ... }
+                        pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
+                        output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                    }
+                },
+                tsb:{
+                    src:'srcb/**/*.ts',
+                    loader:'development-assert-ts',
+                    // also can add pipe works for module tasks here.
+                    pipe(stream, config, dist, gulp){ ... }
+                    pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
+                    output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                },
+                js:{
+                    loader:'development-assert-js',
+                    //add pipe works for module tasks here.
+                    pipe(stream, config, dist, gulp){ ... }
+                    pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
+                    output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                }
                 json: 'src/**/*.json',
                 css:'src/common/**/*.css',
                 moduleBcss: ['src/moduleB/**/*.css'],
@@ -60,9 +84,11 @@ Development.create(gulp, __dirname, {
                 },
                 ...
             },
+            loader: 'development-tool-web',
+            // also can add pipe works for module tasks here.
+            pipe(stream, config, dist, gulp){ ... }
             pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
-            output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[],
-            loader: 'development-tool-web'
+            output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
         }
     ]
 });
