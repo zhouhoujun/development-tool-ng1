@@ -4,7 +4,7 @@ import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
     ITask, ITaskInfo, ITransform, ITaskConfig, IDynamicTaskOption,
-    Operation, IDynamicTasks, task, dynamicTask
+    Operation, IDynamicTasks, task, dynamicTask, IAssertDist
 } from 'development-core';
 // import * as chalk from 'chalk';
 import { Server } from 'karma';
@@ -30,7 +30,7 @@ export class WebDefaultTasks implements IDynamicTasks {
                 name: 'test',
                 test: true,
                 oper: Operation.test | Operation.release | Operation.deploy,
-                pipe(gulpsrc: ITransform, config: ITaskConfig, dt?: IDynamicTaskOption, callback?: TaskCallback) {
+                pipe(gulpsrc: ITransform, config: ITaskConfig, dist?: IAssertDist, gulp?: Gulp, callback?: TaskCallback) {
                     let option = <IWebTaskOption>config.option;
                     let karmaConfigFile = option.karmaConfigFile || path.join(config.env.root, './karma.conf.js');
                     if (!path.isAbsolute(karmaConfigFile)) {
