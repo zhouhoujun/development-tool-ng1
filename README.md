@@ -49,25 +49,25 @@ Development.create(gulp, __dirname, {
                     loader: {
                         module:'development-assert-ts',
                         // add pipe works for module tasks.
-                        pipe(stream, config, dist, gulp){ ... }
-                        pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
-                        output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                        pipe(stream, ctx, dist, gulp){ ... }
+                        pipes: Pipe[] | (ctx, dist, gulp)=> Pipe[],
+                        output: OutputPipe[] | (stream, ctx, dist, gulp)=> OutputPipe[]
                     }
                 },
                 tsb:{
                     src:'srcb/**/*.ts',
                     loader:'development-assert-ts',
                     // also can add pipe works for module tasks here.
-                    pipe(stream, config, dist, gulp){ ... }
-                    pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
-                    output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                    pipe(stream, ctx, dist, gulp){ ... }
+                    pipes: Pipe[] | (ctx, dist, gulp)=> Pipe[],
+                    output: OutputPipe[] | (stream, ctx, dist, gulp)=> OutputPipe[]
                 },
                 js:{
                     loader:'development-assert-js',
                     //add pipe works for module tasks here.
-                    pipe(stream, config, dist, gulp){ ... }
-                    pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
-                    output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+                    pipe(stream, ctx, dist, gulp){ ... }
+                    pipes: Pipe[] | (ctx, dist, gulp)=> Pipe[],
+                    output: OutputPipe[] | (stream, ctx, dist, gulp)=> OutputPipe[]
                 }
                 json: 'src/**/*.json',
                 css:'src/common/**/*.css',
@@ -86,9 +86,9 @@ Development.create(gulp, __dirname, {
             },
             loader: 'development-tool-web',
             // also can add pipe works for module tasks here.
-            pipe(stream, config, dist, gulp){ ... }
-            pipes: Pipe[] | (config, dist, gulp)=> Pipe[],
-            output: OutputPipe[] | (stream, config, dist, gulp)=> OutputPipe[]
+            pipe(stream, ctx, dist, gulp){ ... }
+            pipes: Pipe[] | (ctx, dist, gulp)=> Pipe[],
+            output: OutputPipe[] | (stream, ctx, dist, gulp)=> OutputPipe[]
         }
     ]
 });

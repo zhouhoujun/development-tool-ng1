@@ -1,32 +1,29 @@
 /// <reference types="mocha"/>
 import * as _ from 'lodash';
-import { ITask, ITaskConfig, IEnvOption, ITaskOption, ITaskDefine, taskdefine } from 'development-core';
+import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskdefine } from 'development-core';
 
 export * from './WebTaskOption';
 
 import * as webTasks from './tasks/WebDefaultTask';
 
 @taskdefine
-export class Define implements ITaskDefine {
-    loadConfig(option: ITaskOption, env: IEnvOption): ITaskConfig {
+export class WebDefine implements IContextDefine {
+    getContext(config: ITaskConfig): ITaskContext {
         // register default asserts.
-        option.asserts = _.extend({
+        config.option.asserts = _.extend({
             ts: 'development-assert-ts',
             js: 'development-assert-js'
-        }, option.asserts);
+        }, config.option.asserts);
 
 
-        return <ITaskConfig>{
-            env: env,
-            option: option
-        }
+        return bindingConfig(config);
     }
 
-    loadTasks(config: ITaskConfig): Promise<ITask[]> {
-        return config.findTasks(webTasks)
+    tasks(ctx: ITaskContext): Promise<ITask[]> {
+        return ctx.findTasks(webTasks)
             .then(tasks => {
-                if (config.env.serve) {
-                    return config.findTasks(webTasks, { group: 'serve' })
+                if (ctx.env.serve) {
+                    return ctx.findTasks(webTasks, { group: 'serve' })
                         .then(serTasks => {
                             return tasks.concat(serTasks || []);
                         });

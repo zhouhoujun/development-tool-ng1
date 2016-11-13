@@ -3,7 +3,7 @@
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
-    ITask, ITaskInfo, ITransform, ITaskConfig, IDynamicTaskOption,
+    ITask, ITaskInfo, ITransform, ITaskContext, IDynamicTaskOption,
     Operation, IDynamicTasks, task, dynamicTask, IAssertDist
 } from 'development-core';
 // import * as chalk from 'chalk';
@@ -24,17 +24,16 @@ export class WebDefaultTasks implements IDynamicTasks {
                 name: 'clean',
                 order: 0,
                 oper: Operation.clean | Operation.default,
-                task: (config, dt) => del(config.getSrc(dt, dt))
+                task: (ctx, dt) => del(ctx.getSrc(dt))
             },
             {
                 name: 'test',
-                test: true,
                 oper: Operation.test | Operation.release | Operation.deploy,
-                pipe(gulpsrc: ITransform, config: ITaskConfig, dist?: IAssertDist, gulp?: Gulp, callback?: TaskCallback) {
-                    let option = <IWebTaskOption>config.option;
-                    let karmaConfigFile = option.karmaConfigFile || path.join(config.env.root, './karma.conf.js');
+                pipe(gulpsrc: ITransform, ctx: ITaskContext, dist?: IAssertDist, gulp?: Gulp, callback?: TaskCallback) {
+                    let option = <IWebTaskOption>ctx.option;
+                    let karmaConfigFile = option.karmaConfigFile || path.join(ctx.env.root, './karma.conf.js');
                     if (!path.isAbsolute(karmaConfigFile)) {
-                        karmaConfigFile = path.join(config.env.root, karmaConfigFile);
+                        karmaConfigFile = path.join(ctx.env.root, karmaConfigFile);
                     }
                     new Server({
                         configFile: karmaConfigFile
@@ -52,19 +51,19 @@ export class WebDefaultTasks implements IDynamicTasks {
 })
 export class StartService implements ITask {
     decorator: ITaskInfo;
-    setup(config: ITaskConfig, gulp: Gulp) {
-        let option = <IWebTaskOption>config.option;
+    setup(ctx: ITaskContext, gulp: Gulp) {
+        let option = <IWebTaskOption>ctx.option;
 
-        let dist = config.getDist()
+        let dist = ctx.getDist()
         option.browsersync = option.browsersync || {
             server: {
-                baseDir: config.getDist()
+                baseDir: ctx.getDist()
             },
             open: true,
             port: process.env.PORT || 3000,
             files: `${dist}/**/*`
         };
-        let tkn = config.subTaskName('browsersync')
+        let tkn = ctx.subTaskName('browsersync')
         gulp.task(tkn, (callback: TaskCallback) => {
             browserSync(option.browsersync, (err, bs) => {
                 if (err) {
