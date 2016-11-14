@@ -31,8 +31,7 @@ import { IWebTaskOption } from 'development-tool-web';
 ## Create development tool
 
 ```ts
-Development.create(gulp, __dirname, {
-    tasks:[
+Development.create(gulp, __dirname, [
         <IWebTaskOption>{
             src: 'src',
             //testSrc: '...',
@@ -90,8 +89,7 @@ Development.create(gulp, __dirname, {
             pipes: Pipe[] | (ctx, dist, gulp)=> Pipe[],
             output: OutputPipe[] | (stream, ctx, dist, gulp)=> OutputPipe[]
         }
-    ]
-});
+    ]);
 ```
 
 ## Create development tool with addation sub tasks

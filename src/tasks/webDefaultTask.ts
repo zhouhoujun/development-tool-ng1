@@ -28,7 +28,7 @@ export class WebDefaultTasks implements IDynamicTasks {
             },
             {
                 name: 'test',
-                oper: Operation.test | Operation.release | Operation.deploy,
+                oper: Operation.test | Operation.default,
                 pipe(gulpsrc: ITransform, ctx: ITaskContext, dist?: IAssertDist, gulp?: Gulp, callback?: TaskCallback) {
                     let option = <IWebTaskOption>ctx.option;
                     let karmaConfigFile = option.karmaConfigFile || path.join(ctx.env.root, './karma.conf.js');
