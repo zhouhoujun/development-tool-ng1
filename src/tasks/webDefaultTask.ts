@@ -59,16 +59,16 @@ export class StartService implements ITask {
     setup(ctx: ITaskContext, gulp: Gulp) {
         let option = <IWebTaskOption>ctx.option;
 
-        let dist = ctx.getDist()
+        let dist = ctx.getDist(this.getInfo());
         option.browsersync = option.browsersync || {
             server: {
-                baseDir: ctx.getDist()
+                baseDir: dist
             },
             open: true,
             port: process.env.PORT || 3000,
             files: `${dist}/**/*`
         };
-        let tkn = ctx.subTaskName('browsersync')
+        let tkn = ctx.subTaskName('browsersync');
         gulp.task(tkn, (callback: TaskCallback) => {
             browserSync(option.browsersync, (err, bs) => {
                 if (err) {
