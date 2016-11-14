@@ -5,6 +5,8 @@ export declare class WebDefaultTasks implements IDynamicTasks {
     tasks(): IDynamicTaskOption[];
 }
 export declare class StartService implements ITask {
-    decorator: ITaskInfo;
+    private info;
+    constructor(info: ITaskInfo);
+    getInfo(): ITaskInfo;
     setup(ctx: ITaskContext, gulp: Gulp): any;
 }

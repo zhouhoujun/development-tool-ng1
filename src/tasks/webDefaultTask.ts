@@ -50,7 +50,12 @@ export class WebDefaultTasks implements IDynamicTasks {
     oper: Operation.test | Operation.e2e | Operation.default
 })
 export class StartService implements ITask {
-    decorator: ITaskInfo;
+    constructor(private info: ITaskInfo) {
+
+    }
+    getInfo() {
+        return this.info;
+    }
     setup(ctx: ITaskContext, gulp: Gulp) {
         let option = <IWebTaskOption>ctx.option;
 
