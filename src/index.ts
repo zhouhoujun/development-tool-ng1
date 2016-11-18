@@ -20,17 +20,6 @@ export class WebDefine implements IContextDefine {
     }
 
     tasks(ctx: ITaskContext): Promise<ITask[]> {
-        return ctx.findTasks(webTasks)
-            .then(tasks => {
-                if (ctx.env.serve) {
-                    return ctx.findTasks(webTasks, { group: 'serve' })
-                        .then(serTasks => {
-                            return tasks.concat(serTasks || []);
-                        });
-                } else {
-                    return tasks;
-                }
-
-            });
+        return ctx.findTasks(webTasks);
     }
 }

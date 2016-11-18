@@ -46,14 +46,14 @@ export class WebDefaultTasks implements IDynamicTasks {
 }
 
 @task({
-    group: 'serve',
-    oper: Operation.test | Operation.e2e | Operation.default
+    order: total => total + 1, // last order.
+    oper: Operation.default | Operation.serve
 })
 export class StartService implements ITask {
     constructor(private info: ITaskInfo) {
-
     }
     getInfo() {
+        this.info.name = this.info.name || 'serve';
         return this.info;
     }
     setup(ctx: ITaskContext, gulp: Gulp) {
