@@ -1,7 +1,7 @@
-import { ITaskOption } from 'development-core';
+import { IAsserts } from 'development-core';
 import { Options } from 'browser-sync';
 
-export interface IWebTaskOption extends ITaskOption {
+export interface IWebTaskOption extends IAsserts {
     /**
      * browser setting
      * 
