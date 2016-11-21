@@ -1,5 +1,5 @@
 
-// import * as _ from 'lodash';
+import * as _ from 'lodash';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
@@ -44,8 +44,8 @@ export class Clean implements ITask {
     setup(ctx: ITaskContext, gulp: Gulp) {
         let info = this.getInfo();
         let tkn = ctx.subTaskName(info);
-        gulp.task(tkn, (callback: TaskCallback) => {
-            del(ctx.getSrc(info));
+        gulp.task(tkn, () => {
+            return del(ctx.getSrc(info));
         });
 
         return tkn;
@@ -111,7 +111,8 @@ export class DeployTest implements ITask {
                 cfg = option.karmaConfig(ctx);
             }
             new Server(_.extend(cfg || {}, {
-                configFile: karmaConfigFile
+                configFile: karmaConfigFile,
+                singleRun: true
             }), (code: number) => {
                 if (code === 1) {
                     console.log('Unit Test failures, exiting process');
