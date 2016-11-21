@@ -18,37 +18,20 @@ export interface IWebTaskOption extends IAsserts {
     karmaConfigFile?: string;
 
     /**
-     * e2e test protractor config file
+     * karma test config setting.
      * 
-     * @type {string}
-     * @memberOf WebTaskOption
-     */
-    protractorFile?: string;
-
-    /**
-     * tsconfig for typescript
      * 
-     * @type {string}
-     * @memberOf NodeBuildOption
+     * @memberOf IWebTaskOption
      */
-    tsconfig?: string;
+    karmaConfig?: ((ctx) => Object);
 
-
-    /**
-     * babel option.
-     * 
-     * @type {*}
-     * @memberOf INodeTaskOption
-     */
-    tsBabelOption?: any;
-
-    /**
-     * babel option.
-     * 
-     * @type {*}
-     * @memberOf INodeTaskOption
-     */
-    jsBabelOption?: any;
+    // /**
+    //  * e2e test protractor config file
+    //  * 
+    //  * @type {string}
+    //  * @memberOf WebTaskOption
+    //  */
+    // protractorFile?: string;
 
 }
 

@@ -1,4 +1,5 @@
 /// <reference types="browser-sync" />
+/// <reference types="chai" />
 import { IAsserts } from 'development-core';
 import { Options } from 'browser-sync';
 export interface IWebTaskOption extends IAsserts {
@@ -17,31 +18,10 @@ export interface IWebTaskOption extends IAsserts {
      */
     karmaConfigFile?: string;
     /**
-     * e2e test protractor config file
+     * karma test config setting.
      *
-     * @type {string}
-     * @memberOf WebTaskOption
-     */
-    protractorFile?: string;
-    /**
-     * tsconfig for typescript
      *
-     * @type {string}
-     * @memberOf NodeBuildOption
+     * @memberOf IWebTaskOption
      */
-    tsconfig?: string;
-    /**
-     * babel option.
-     *
-     * @type {*}
-     * @memberOf INodeTaskOption
-     */
-    tsBabelOption?: any;
-    /**
-     * babel option.
-     *
-     * @type {*}
-     * @memberOf INodeTaskOption
-     */
-    jsBabelOption?: any;
+    karmaConfig?: ((ctx) => Object);
 }
