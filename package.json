@@ -18,6 +18,8 @@
     "tool",
     "gulp",
     "typescript",
+    "front-end",
+    "tasks",
     "node",
     "babel"
   ],
