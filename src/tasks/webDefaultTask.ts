@@ -1,10 +1,10 @@
 
 import * as _ from 'lodash';
+import * as chalk from 'chalk';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
-    ITask, ITaskInfo, ITransform, ITaskContext, IDynamicTaskOption,
-    Operation, IDynamicTasks, task, dynamicTask, IAssertDist
+    ITask, ITaskInfo, Operation, task, ITaskContext
 } from 'development-core';
 // import * as chalk from 'chalk';
 import { Server } from 'karma';
@@ -77,9 +77,17 @@ export class BuildTest implements ITask {
             if (option.karmaConfig) {
                 cfg = option.karmaConfig(ctx);
             }
-            new Server(_.extend(cfg || {}, {
-                configFile: karmaConfigFile
-            }), <any>callback).start();
+            new Server(_.extend(cfg || { basePath: ctx.getDist(), singleRun: ctx.env.watch !== true }, {
+                configFile: karmaConfigFile,
+            }), (code: number) => {
+                if (code === 1) {
+                    console.log(chalk.red('Unit Test failures, exiting process'), ', code:', chalk.cyan(<any>code));
+                    callback(<any>'Unit Test failures, exiting process');
+                } else {
+                    console.log('Unit Tests passed', ', code:', chalk.cyan(<any>code));
+                    callback();
+                }
+            }).start();
         });
 
         return tkn;
@@ -110,18 +118,18 @@ export class DeployTest implements ITask {
             if (option.karmaConfig) {
                 cfg = option.karmaConfig(ctx);
             }
-            new Server(_.extend(cfg || {}, {
-                configFile: karmaConfigFile,
-                singleRun: true
-            }), (code: number) => {
-                if (code === 1) {
-                    console.log('Unit Test failures, exiting process');
-                    callback(<any>'Unit Test Failures');
-                } else {
-                    console.log('Unit Tests passed');
-                    callback();
-                }
-            }).start();
+            new Server(_.extend(cfg || { basePath: ctx.getDist(), singleRun: true }, {
+                configFile: karmaConfigFile
+            })
+                , (code: number) => {
+                    if (code === 1) {
+                        console.log(chalk.red('Unit Test failures, exiting process'), ', code:', chalk.cyan(<any>code));
+                        callback(<any>'Unit Test failures, exiting process');
+                    } else {
+                        console.log('Unit Tests passed', ', code:', chalk.cyan(<any>code));
+                        callback();
+                    }
+                }).start();
         });
 
         return tkn;

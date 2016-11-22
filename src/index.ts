@@ -3,7 +3,6 @@ import * as _ from 'lodash';
 import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskdefine } from 'development-core';
 
 export * from './WebTaskOption';
-
 import * as webTasks from './tasks/WebDefaultTask';
 
 @taskdefine
