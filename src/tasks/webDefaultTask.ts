@@ -4,7 +4,7 @@ import * as chalk from 'chalk';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
 import {
-    ITask, ITaskInfo, Operation, task, ITaskContext
+    ITask, ITaskInfo, Operation, task, ITaskContext, RunWay
 } from 'development-core';
 // import * as chalk from 'chalk';
 import { Server } from 'karma';
@@ -54,7 +54,7 @@ export class Clean implements ITask {
 
 
 @task({
-    order: 0.25, // last order.
+    order: { value: 0.25, runWay: RunWay.parallel }, // last order.
     oper: Operation.build | Operation.test
 })
 export class BuildTest implements ITask {
@@ -95,7 +95,7 @@ export class BuildTest implements ITask {
 }
 
 @task({
-    order: 0.25, // last order.
+    order: { value: 0.25, runWay: RunWay.parallel }, // last order.
     oper: Operation.deploy | Operation.release | Operation.test
 })
 export class DeployTest implements ITask {
@@ -138,7 +138,7 @@ export class DeployTest implements ITask {
 
 
 @task({
-    order: 1, // last order.
+    order: (total, ctx) => ctx.env.test ? { value: 0.25, runWay: RunWay.parallel } : 1, // last order.
     oper: Operation.default | Operation.serve
 })
 export class StartService implements ITask {
@@ -151,18 +151,35 @@ export class StartService implements ITask {
     setup(ctx: ITaskContext, gulp: Gulp) {
         let option = <IWebTaskOption>ctx.option;
 
+        let files: string[] = null;
+        if (option.serverFiles) {
+            files = _.isFunction(option.serverFiles) ? option.serverFiles(ctx) : option.serverFiles;
+        }
+        files = files || [];
         let dist = ctx.getDist(this.getInfo());
-        option.browsersync = option.browsersync || {
+        let baseDir = '';
+        if (option.serverBaseDir) {
+            baseDir = _.isFunction(option.serverBaseDir) ? option.serverBaseDir(ctx) : option.serverBaseDir;
+        } else {
+            baseDir = dist;
+        }
+        files.push(`${dist}/**/*`);
+
+        let browsersyncOption = {
             server: {
-                baseDir: dist
+                baseDir: baseDir
             },
             open: true,
             port: process.env.PORT || 3000,
-            files: `${dist}/**/*`
+            files: files
         };
+
+        if (option.browsersync) {
+            browsersyncOption = _.extend(browsersyncOption, _.isFunction(option.browsersync) ? option.browsersync(ctx, browsersyncOption) : option.browsersync);
+        }
         let tkn = ctx.subTaskName('browsersync');
         gulp.task(tkn, (callback: TaskCallback) => {
-            browserSync(option.browsersync, (err, bs) => {
+            browserSync(browsersyncOption, (err, bs) => {
                 if (err) {
                     callback(<any>err);
                 }
