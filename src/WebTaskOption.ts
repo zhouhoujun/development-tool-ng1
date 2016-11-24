@@ -1,4 +1,4 @@
-import { IAsserts, ITaskContext } from 'development-core';
+import { IAsserts, ITaskContext, Src } from 'development-core';
 import { Options } from 'browser-sync';
 
 export interface IWebTaskOption extends IAsserts {
@@ -23,7 +23,7 @@ export interface IWebTaskOption extends IAsserts {
      * @type {(string | ((ctx: ITaskContext) => string))}
      * @memberOf IWebTaskOption
      */
-    serverBaseDir?: string | ((ctx: ITaskContext) => string);
+    serverBaseDir?: Src | ((ctx: ITaskContext) => Src);
     /**
      * karma config File
      * 

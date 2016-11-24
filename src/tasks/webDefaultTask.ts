@@ -3,9 +3,7 @@ import * as _ from 'lodash';
 import * as chalk from 'chalk';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
-import {
-    ITask, ITaskInfo, Operation, task, ITaskContext, RunWay
-} from 'development-core';
+import { Src, ITask, ITaskInfo, Operation, task, ITaskContext, RunWay } from 'development-core';
 // import * as chalk from 'chalk';
 import { Server } from 'karma';
 import * as path from 'path';
@@ -157,7 +155,7 @@ export class StartService implements ITask {
         }
         files = files || [];
         let dist = ctx.getDist(this.getInfo());
-        let baseDir = '';
+        let baseDir: Src = null;
         if (option.serverBaseDir) {
             baseDir = _.isFunction(option.serverBaseDir) ? option.serverBaseDir(ctx) : option.serverBaseDir;
         } else {
