@@ -75,7 +75,7 @@ export class BuildTest implements ITask {
             if (option.karmaConfig) {
                 cfg = option.karmaConfig(ctx);
             }
-            new Server(_.extend(cfg || { basePath: ctx.getDist(), singleRun: ctx.env.watch !== true }, {
+            new Server(_.extend(cfg || { basePath: _.isUndefined(option.karmaBasePath) ? ctx.getDist() : ctx.toStr(option.karmaBasePath), singleRun: ctx.env.watch !== true }, {
                 configFile: karmaConfigFile,
             }), (code: number) => {
                 if (code === 1) {
@@ -175,7 +175,7 @@ export class StartService implements ITask {
         if (option.browsersync) {
             browsersyncOption = _.extend(browsersyncOption, _.isFunction(option.browsersync) ? option.browsersync(ctx, browsersyncOption) : option.browsersync);
         }
-        let tkn = ctx.subTaskName('browsersync');
+        let tkn = ctx.subTaskName(this.info);
         gulp.task(tkn, (callback: TaskCallback) => {
             browserSync(browsersyncOption, (err, bs) => {
                 if (err) {

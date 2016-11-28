@@ -1,6 +1,6 @@
 /// <reference types="browser-sync" />
 /// <reference types="chai" />
-import { IAsserts, ITaskContext, Src } from 'development-core';
+import { IAsserts, ITaskContext, TaskSource, TaskString } from 'development-core';
 import { Options } from 'browser-sync';
 export interface IWebTaskOption extends IAsserts {
     /**
@@ -19,10 +19,17 @@ export interface IWebTaskOption extends IAsserts {
     /**
      * server base dir.
      *
-     * @type {(string | ((ctx: ITaskContext) => string))}
+     * @type {TaskSource}
      * @memberOf IWebTaskOption
      */
-    serverBaseDir?: Src | ((ctx: ITaskContext) => Src);
+    serverBaseDir?: TaskSource;
+    /**
+     * karam test base path.  default context dist.
+     *
+     * @type {TaskString}
+     * @memberOf IWebTaskOption
+     */
+    karmaBasePath?: TaskString;
     /**
      * karma config File
      *
