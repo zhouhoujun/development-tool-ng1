@@ -1,7 +1,58 @@
 /// <reference types="browser-sync" />
-/// <reference types="chai" />
+/// <reference types="karma" />
 import { IAsserts, ITaskContext, TaskSource, TaskString } from 'development-core';
 import { Options } from 'browser-sync';
+import * as karam from 'karma';
+/**
+ * karam jspm test config.
+ *
+ * @export
+ * @interface KarmaJspm
+ */
+export interface KarmaJspm {
+    /**
+     * baseURL for test path.
+     *
+     * @type {TaskString}
+     * @memberOf KarmaJspm
+     */
+    baseURL?: TaskString;
+    /**
+     * config file. default use package setting.
+     *
+     * @type {TaskString}
+     * @memberOf KarmaJspm
+     */
+    configFile?: TaskString;
+    /**
+     * jspm package path. default use package setting.
+     *
+     * @type {TaskString}
+     * @memberOf KarmaJspm
+     */
+    jspmPackage?: TaskString;
+    /**
+     * load test files.
+     *
+     * @type {TaskSource}
+     * @memberOf KarmaJspm
+     */
+    testFiles: TaskSource;
+    /**
+     * server files.
+     *
+     * @type {TaskSource}
+     * @memberOf KarmaJspm
+     */
+    serveFiles: TaskSource;
+    /**
+     * need jspm ^0.17
+     *
+     * @type {TaskString}
+     * @memberOf KarmaJspm
+     */
+    browser?: TaskString;
+}
 export interface IWebTaskOption extends IAsserts {
     /**
      * browser server setting
@@ -39,9 +90,16 @@ export interface IWebTaskOption extends IAsserts {
     karmaConfigFile?: string;
     /**
      * karma test config setting.
-     * @type {((ctx: ITaskContext) => Object)}
+     * @type {((ctx: ITaskContext) => karmaConfig)}
      *
      * @memberOf IWebTaskOption
      */
-    karmaConfig?: ((ctx: ITaskContext) => Object);
+    karmaConfig?: ((ctx: ITaskContext) => karam.ConfigOptions);
+    /**
+     * karam jspm  test
+     *
+     *
+     * @memberOf IWebTaskOption
+     */
+    karamjspm?: KarmaJspm | ((ctx: ITaskContext) => KarmaJspm);
 }

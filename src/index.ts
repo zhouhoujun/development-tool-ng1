@@ -3,7 +3,8 @@ import * as _ from 'lodash';
 import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskdefine } from 'development-core';
 
 export * from './WebTaskOption';
-import * as webTasks from './tasks/WebDefaultTask';
+import * as path from 'path';
+
 
 @taskdefine
 export class WebDefine implements IContextDefine {
@@ -19,6 +20,6 @@ export class WebDefine implements IContextDefine {
     }
 
     tasks(ctx: ITaskContext): Promise<ITask[]> {
-        return ctx.findTasks(webTasks);
+        return ctx.findTasksInDir(path.join(__dirname, './tasks'));
     }
 }
