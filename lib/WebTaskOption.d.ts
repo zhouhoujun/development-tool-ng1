@@ -176,5 +176,5 @@ export interface IWebTaskOption extends IAsserts {
      *
      * @memberOf IWebTaskOption
      */
-    karmajspm?: KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
+    karmaJspm?: KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
 }

@@ -46,7 +46,7 @@ export class KarmaTest implements ITask {
 
             cfg.basePath = ctx.toRootPath(cfg.basePath);
 
-            if (option.karmajspm) {
+            if (option.karmaJspm) {
                 cfg.files = cfg.files || [];
                 require(karmaConfigFile)({
                     set(config) {
@@ -68,7 +68,7 @@ export class KarmaTest implements ITask {
                     }
                 });
 
-            if (option.karmajspm) {
+            if (option.karmaJspm) {
                 serve.on('file_list_modified', () => {
 
                 });
@@ -83,7 +83,7 @@ export class KarmaTest implements ITask {
         let option = <IWebTaskOption>ctx.option;
         let pkg = ctx.getPackage();
 
-        let karmajspm = _.isFunction(option.karmajspm) ? option.karmajspm(ctx) : option.karmajspm;
+        let karmajspm = _.isFunction(option.karmaJspm) ? option.karmaJspm(ctx) : option.karmaJspm;
         let adapterfile = ctx.toUrl(this.checkAdapter(karmajspm, ctx));
 
         let initJspm: any = (files: (karma.FilePattern | string)[], basePath: string, jspm: KarmaJspm, client, emitter) => {
@@ -161,8 +161,8 @@ export class KarmaTest implements ITask {
             }
 
             files.unshift(createPattern(adapterfile));
-            files.unshift(createPattern(getPackageFilePath(packagesPath, 'system-polyfills.src')));
-            files.unshift(createPattern(getPackageFilePath(packagesPath, 'system.src')));
+            files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, 'system-polyfills.src'))));
+            files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, 'system.src'))));
 
             function addExpandedFiles() {
                 client.jspm.expandedFiles = _.flatten(_.map(jspm.loadFiles, file => {
@@ -326,11 +326,12 @@ function expandGlob(file, cwd: string) {
 }
 
 function getPackageFilePath(packagesPath: string, fileName: string): string {
-    var exists = glob.sync(packagesPath + fileName + '@*.js');
+    let fm = path.join(packagesPath, fileName + '@*.js');
+    var exists = glob.sync(fm);
     if (exists && exists.length !== 0) {
-        return packagesPath + fileName + '@*.js';
+        return fm;
     } else {
-        return packagesPath + fileName + '.js';
+        return path.join(packagesPath, fileName + '.js');
     }
 }
 
