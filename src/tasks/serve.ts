@@ -9,7 +9,7 @@ import * as browserSync from 'browser-sync';
     order: (total, ctx) => ctx.env.test ? { value: 0.25, runWay: RunWay.parallel } : 1, // last order.
     oper: Operation.default | Operation.serve
 })
-export class StartService implements ITask {
+export class StartServer implements ITask {
     constructor(private info: ITaskInfo) {
     }
     getInfo() {

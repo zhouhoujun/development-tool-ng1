@@ -1,9 +1,11 @@
 /// <reference types="mocha"/>
 import * as _ from 'lodash';
 import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskdefine } from 'development-core';
+import { Clean } from './tasks/clean';
+import {  StartServer  } from './tasks/serve';
+import { KarmaTest } from './tasks/test';
 
 export * from './WebTaskOption';
-import * as path from 'path';
 
 
 @taskdefine
@@ -20,6 +22,11 @@ export class WebDefine implements IContextDefine {
     }
 
     tasks(ctx: ITaskContext): Promise<ITask[]> {
-        return ctx.findTasksInDir(path.join(__dirname, './tasks'));
+        return ctx.findTasks([
+            Clean,
+            StartServer,
+            KarmaTest
+        ]);
+        // return ctx.findTasksInDir(path.join(__dirname, './tasks'));
     }
 }
