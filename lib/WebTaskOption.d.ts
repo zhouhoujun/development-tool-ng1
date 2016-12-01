@@ -166,7 +166,7 @@ export interface IKarmaOption {
      *
      * @memberOf IWebTaskOption
      */
-    jspm?: KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
+    jspm?: boolean | KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
     /**
      * karma test base path.  default context dist.
      *
