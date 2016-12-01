@@ -17,20 +17,34 @@ export class StartServer implements ITask {
         return this.info;
     }
     setup(ctx: ITaskContext, gulp: Gulp) {
-        let option = <IWebTaskOption>ctx.option;
-
+        let option = (<IWebTaskOption>ctx.option).browsersync || {};
         let files: string[] = null;
-        if (option.serverFiles) {
-            files = _.isFunction(option.serverFiles) ? option.serverFiles(ctx) : option.serverFiles;
+        if (option.files) {
+            files = _.isFunction(option.files) ? option.files(ctx) : option.files;
         }
         files = files || [];
+        let pkg = ctx.getPackage();
+        let packagePath = '';
+        if (option.jspm && option.jspm.packages) {
+            packagePath = ctx.toRootPath(ctx.toStr(option.jspm.packages));
+        } else {
+            if (pkg.jspm && pkg.jspm && pkg.jspm.directories) {
+                packagePath = ctx.toRootPath(pkg.jspm.directories.packages);
+            }
+        }
+
+        if (packagePath) {
+            files.push(`${packagePath}/**/*`)
+        }
+
         let dist = ctx.getDist(this.getInfo());
         let baseDir: Src = null;
-        if (option.serverBaseDir) {
-            baseDir = _.isFunction(option.serverBaseDir) ? option.serverBaseDir(ctx) : option.serverBaseDir;
+        if (option.baseDir) {
+            baseDir = ctx.toRootSrc(_.isFunction(option.baseDir) ? option.baseDir(ctx) : option.baseDir);
         } else {
             baseDir = dist;
         }
+
         files.push(`${dist}/**/*`);
 
         let browsersyncOption = {

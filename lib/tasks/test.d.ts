@@ -9,6 +9,7 @@ export declare class KarmaTest implements ITask {
     constructor(info: ITaskInfo);
     getInfo(): ITaskInfo;
     setup(ctx: ITaskContext, gulp: Gulp): any;
+    getRelativePaths(ctx: ITaskContext, rootpath: string): any;
     initkarmaJspmPlugin(cfg: karma.ConfigOptions, ctx: ITaskContext): karma.ConfigOptions;
     getDefaultAdapter(): {
         name: string;

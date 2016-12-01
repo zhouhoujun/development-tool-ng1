@@ -15,13 +15,43 @@ export interface IJspmMate {
 export type FilePattern = karma.FilePattern | string;
 export type LoaderFilePattern = FilePattern[] | ((ctx: ITaskContext) => FilePattern[]);
 
+
+/**
+ * jspm Option.
+ * 
+ * @export
+ * @interface JspmOption
+ */
+export interface JspmOption {
+    /**
+      * baseURL for test path.
+      * 
+      * @type {TaskString}
+      * @memberOf JspmOption
+      */
+    baseURL?: TaskString;
+    /**
+     * config file. default use package setting.
+     * 
+     * @type {TaskSource}
+     * @memberOf JspmOption
+     */
+    config?: TaskSource;
+    /**
+     * jspm package path. default use package setting.
+     * 
+     * @type {TaskString}
+     * @memberOf JspmOption
+     */
+    packages?: TaskString;
+}
 /**
  * karma jspm test config.
  * 
  * @export
  * @interface KarmaJspm
  */
-export interface KarmaJspm {
+export interface KarmaJspm extends JspmOption {
     /**
      * baseURL for test path.
      * 
@@ -83,28 +113,7 @@ export interface KarmaJspm {
  * @export
  * @interface KarmaJspm
  */
-export interface KarmaJspmOption {
-    /**
-     * baseURL for test path.
-     * 
-     * @type {TaskString}
-     * @memberOf KarmaJspm
-     */
-    baseURL?: TaskString;
-    /**
-     * config file. default use package setting.
-     * 
-     * @type {TaskSource}
-     * @memberOf KarmaJspm
-     */
-    config?: TaskSource;
-    /**
-     * jspm package path. default use package setting.
-     * 
-     * @type {TaskString}
-     * @memberOf KarmaJspm
-     */
-    packages?: TaskString;
+export interface KarmaJspmOption extends JspmOption {
     /**
      * load test files.
      * 
@@ -144,12 +153,12 @@ export interface KarmaJspmOption {
     }
 }
 
-export interface IWebTaskOption extends IAsserts {
+export interface IBrowsersyncOption {
     /**
-     * browser server setting 
-     * @type {(Options | ((ctx: ITaskContext, defaultOptions?: Option) => Options))}
-     * @memberOf IWebTaskOption
-     */
+    * browser server setting 
+    * @type {(Options | ((ctx: ITaskContext, defaultOptions?: Option) => Options))}
+    * @memberOf IWebTaskOption
+    */
     browsersync?: Options | ((ctx: ITaskContext, defaultOptions?: Options) => Options);
 
     /**
@@ -158,7 +167,7 @@ export interface IWebTaskOption extends IAsserts {
      * @type {(string[] | ((ctx: ITaskContext) => string[]))}
      * @memberOf IWebTaskOption
      */
-    serverFiles?: string[] | ((ctx: ITaskContext) => string[]);
+    files?: string[] | ((ctx: ITaskContext) => string[]);
 
     /**
      * server base dir.
@@ -166,31 +175,12 @@ export interface IWebTaskOption extends IAsserts {
      * @type {TaskSource}
      * @memberOf IWebTaskOption
      */
-    serverBaseDir?: TaskSource;
+    baseDir?: TaskSource;
 
+    jspm?: JspmOption;
+}
 
-    /**
-     * karma test base path.  default context dist.
-     * 
-     * @type {TaskString}
-     * @memberOf IWebTaskOption
-     */
-    karmaBasePath?: TaskString;
-    /**
-     * karma config File
-     * 
-     * @type {string}
-     * @memberOf WebTaskOption
-     */
-    karmaConfigFile?: string;
-
-    /**
-     * karma test config setting.
-     * @type {((ctx: ITaskContext) => karmaConfig)}
-     * 
-     * @memberOf IWebTaskOption
-     */
-    karmaConfig?: ((ctx: ITaskContext) => karma.ConfigOptions);
+export interface IKarmaOption {
 
     /**
      * karma jspm  test
@@ -198,7 +188,38 @@ export interface IWebTaskOption extends IAsserts {
      * 
      * @memberOf IWebTaskOption
      */
-    karmaJspm?: KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
+    jspm?: KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
+
+    /**
+     * karma test base path.  default context dist.
+     * 
+     * @type {TaskString}
+     * @memberOf IWebTaskOption
+     */
+    basePath?: TaskString;
+    /**
+     * karma config File
+     * 
+     * @type {string}
+     * @memberOf WebTaskOption
+     */
+    configFile?: string;
+
+    /**
+     * karma test config setting.
+     * @type {((ctx: ITaskContext) => karmaConfig)}
+     * 
+     * @memberOf IWebTaskOption
+     */
+    config?: ((ctx: ITaskContext) => karma.ConfigOptions);
+}
+
+export interface IWebTaskOption extends IAsserts {
+
+
+    browsersync?: IBrowsersyncOption;
+
+    karma?: IKarmaOption;
 
 }
 
