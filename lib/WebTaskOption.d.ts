@@ -106,6 +106,13 @@ export interface KarmaJspm extends JspmOption {
  */
 export interface KarmaJspmOption extends JspmOption {
     /**
+     * public resource to root.
+     *
+     * @type {TaskSource}
+     * @memberOf KarmaJspmOption
+     */
+    resource?: TaskSource;
+    /**
      * load test files.
      *
      * @type {TaskSource}

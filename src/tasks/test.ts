@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 const glob = require('glob');
 const mkdirp = require('mkdirp');
+import * as url from 'url';
 // import * as mocha from 'gulp-mocha';
 import { IWebTaskOption, KarmaJspmOption, KarmaJspm } from '../WebTaskOption';
 
@@ -82,14 +83,16 @@ export class KarmaTest implements ITask {
             let sf = path.join(bundleDest, d);
             let f = fs.lstatSync(sf);
             if (f.isDirectory()) {
-                let p = d + '/**/*';
+                let p = '/' + d + '/*';
                 paths[p] = prefix + ctx.toUrl(rootpath, path.join(bundleDest, p));
             }
         });
+        let p = '*'
+        paths[p] = prefix + ctx.toUrl(rootpath, path.join(bundleDest, p));
         // let jpk = <string>option.jspmPackages;
         // let jp = path.basename(jpk) + '/*';
         // paths[jp] = self.toUrl(rootpath, path.join(jpk, jp));
-        console.log('paths: ', paths);
+
         return paths;
     }
 
@@ -140,12 +143,33 @@ export class KarmaTest implements ITask {
         let resetBase = false;
         if (/^\.\./.test(relpkg)) {
             resetBase = true;
-            cfg.basePath = ctx.getRootPath();
-            jspmcfg.paths = this.getRelativePaths(ctx, cfg.basePath, 'base/');
-            // jspmcfg.paths = jspmcfg.paths || {};
-            jspmcfg.baseURL = ctx.toUrl(ctx.getRootPath(), ctx.getDist());
-            let rlpk = ctx.toUrl(ctx.getRootPath(), jspmcfg.packages) + '/**/*';
+            let root = cfg.basePath = ctx.getRootPath();
+            jspmcfg.paths = this.getRelativePaths(ctx, cfg.basePath); // , 'base/');
+            let rlpk = ctx.toUrl(root, jspmcfg.packages) + '/*';
             jspmcfg.paths[rlpk] = 'base/' + rlpk;
+
+            let res: Src;
+            if (_.isFunction(karmajspm.resource)) {
+                res = karmajspm.resource(ctx);
+            } else {
+                res = karmajspm.resource || ['public', 'asserts'];
+            }
+            let relpth = ctx.toUrl(root, ctx.getDist());
+            cfg.proxies = cfg.proxies || {};
+            cfg.files = cfg.files || [];
+            _.each(_.isString(res) ? [res] : res, r => {
+                cfg.files.push({ pattern: ctx.toUrl(ctx.toDistPath(r)) + '/**', included: false });
+
+                let abr = /^\//.test(r) ? ('base' + r) : ('base/' + r);
+                cfg.proxies[abr] = url.resolve(relpth, r);
+            });
+
+            // jspmcfg.paths = jspmcfg.paths || {};
+            // jspmcfg.baseURL = ctx.toUrl(root, ctx.getDist());
+            // let rlpk = ctx.toUrl(root, jspmcfg.packages) + '/*';
+            // jspmcfg.paths[rlpk] = '/base/' + rlpk;
+            console.log('paths: ', jspmcfg.paths);
+
             cfg.proxies = _.extend(cfg.proxies, jspmcfg.paths);
         }
 
@@ -279,7 +303,7 @@ export class KarmaTest implements ITask {
     }
 
 
-    System.config({ baseURL: karma.config.jspm.baseURL?  'base/'+karma.config.jspm.baseURL : 'base' });
+    System.config({ baseURL: karma.config.jspm.baseURL?  'base/'+ karma.config.jspm.baseURL : 'base' });
     
 
     var stripExtension = typeof karma.config.jspm.stripExtension === 'boolean' ? karma.config.jspm.stripExtension : true;

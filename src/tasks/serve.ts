@@ -4,6 +4,7 @@ import { TaskCallback, Gulp } from 'gulp';
 import { Src, ITask, ITaskInfo, Operation, task, ITaskContext, RunWay } from 'development-core';
 import { IWebTaskOption } from '../WebTaskOption';
 import * as browserSync from 'browser-sync';
+import * as path from 'path';
 
 @task({
     order: (total, ctx) => ctx.env.test ? { value: 0.25, runWay: RunWay.parallel } : 1, // last order.
@@ -43,6 +44,12 @@ export class StartServer implements ITask {
             baseDir = ctx.toRootSrc(_.isFunction(option.baseDir) ? option.baseDir(ctx) : option.baseDir);
         } else {
             baseDir = dist;
+        }
+        baseDir = _.isArray(baseDir) ? baseDir : [baseDir];
+        let relpkg = path.relative(_.first(baseDir), packagePath);
+        if (/^\.\./.test(relpkg)) {
+            baseDir.push(ctx.getRootPath());
+            baseDir = _.uniq(baseDir);
         }
 
         files.push(`${dist}/**/*`);
