@@ -14,7 +14,7 @@ import * as url from 'url';
 import { IWebTaskOption, KarmaJspmOption, KarmaJspm } from '../WebTaskOption';
 
 @task({
-    order: { value: 0.25, runWay: RunWay.parallel },
+    order: total => { return { value: 2 / total, runWay: RunWay.parallel } },
     oper: Operation.default | Operation.test
 })
 export class KarmaTest implements ITask {
