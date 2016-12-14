@@ -249,8 +249,10 @@ export class KarmaTest implements ITask {
             }
 
             files.unshift(createPattern(adapterfile));
-            files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, 'system-polyfills.src'))));
-            files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, 'system.src'))));
+            let sysjs = karmajspm.systemjs ? ctx.toSrc(karmajspm.systemjs) : ['system-polyfills.src', 'system.src'];
+            _.each(_.isArray(sysjs) ? sysjs : [sysjs], sf => {
+                files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, sf))));
+            });
 
             function addExpandedFiles() {
                 client.jspm.expandedFiles = _.flatten(_.map(jspm.loadFiles, file => {

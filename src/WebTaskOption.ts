@@ -44,6 +44,14 @@ export interface JspmOption {
      * @memberOf JspmOption
      */
     packages?: TaskString;
+
+    /**
+     * systemjs files.
+     * 
+     * @type {TaskSource}
+     * @memberOf KarmaJspm
+     */
+    systemjs?: TaskSource;
 }
 /**
  * karma jspm test config.
@@ -94,7 +102,6 @@ export interface KarmaJspm extends JspmOption {
      * @memberOf KarmaJspm
      */
     browser?: string;
-
 
     paths?: IMap<string>;
 
