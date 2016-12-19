@@ -5,6 +5,10 @@ This repo is for distribution on `npm`. The source for this module is in the
 Please file issues and pull requests against that repo.
 This package use to develop kit for typescript node project development via gulp tasks.
 
+# note
+
+* `if you use jspm package manager, do not setting jspm baseURL!!!`
+
 ## Install
 
 You can install this package either with `npm`.
@@ -16,6 +20,8 @@ You can install this package either with `npm`.
 npm install development-tool-web
 
 ```
+
+
 
 You can `import` modules:
 
