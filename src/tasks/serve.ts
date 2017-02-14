@@ -46,6 +46,7 @@ export class StartServer implements ITask {
             baseDir = dist;
         }
         baseDir = _.isArray(baseDir) ? baseDir : [baseDir];
+        baseDir.push(path.dirname(packagePath));
         let relpkg = path.relative(_.first(baseDir), packagePath);
         if (/^\.\./.test(relpkg)) {
             baseDir.push(ctx.getRootPath());

@@ -139,14 +139,16 @@ export class KarmaTest implements ITask {
             jspmcfg.cachePackages = karmajspm.cachePackages;
         }
 
-        let relpkg = path.relative(cfg.basePath, jspmcfg.packages);
+        let relpkg = ctx.toUrl(cfg.basePath, jspmcfg.packages);
         let resetBase = false;
         if (/^\.\./.test(relpkg)) {
             resetBase = true;
             let root = cfg.basePath = ctx.getRootPath();
             jspmcfg.paths = this.getRelativePaths(ctx, cfg.basePath); // , 'base/');
             let rlpk = ctx.toUrl(root, jspmcfg.packages) + '/*';
-            jspmcfg.paths[rlpk] = 'base/' + rlpk;
+            let jspmpk = path.basename(jspmcfg.packages) + '/*';
+            jspmcfg.paths['/' + jspmpk] = 'base/' + rlpk;
+
 
             let res: Src;
             if (_.isFunction(karmajspm.resource)) {
@@ -171,6 +173,8 @@ export class KarmaTest implements ITask {
             console.log('paths: ', jspmcfg.paths);
 
             cfg.proxies = _.extend(cfg.proxies, jspmcfg.paths);
+            cfg.proxies[path.basename(jspmcfg.packages)] = ctx.toUrl(root, jspmcfg.packages);
+            console.log('proxies: ', cfg.proxies);
         }
 
         jspmcfg.loadFiles = jspmcfg.loadFiles || [];
@@ -219,7 +223,6 @@ export class KarmaTest implements ITask {
             if (jspm.meta !== undefined && typeof jspm.meta === 'object') {
                 client.jspm.meta = jspm.meta;
             }
-
             // Pass on options to client
             client.jspm.useBundles = jspm.useBundles;
             client.jspm.stripExtension = jspm.stripExtension;
