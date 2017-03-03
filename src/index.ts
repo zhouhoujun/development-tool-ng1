@@ -2,7 +2,7 @@
 import * as _ from 'lodash';
 import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskdefine } from 'development-core';
 import { Clean } from './tasks/clean';
-import {  StartServer  } from './tasks/serve';
+import { StartServer } from './tasks/serve';
 import { KarmaTest } from './tasks/test';
 
 export * from './WebTaskOption';
@@ -22,11 +22,15 @@ export class WebDefine implements IContextDefine {
     }
 
     tasks(ctx: ITaskContext): Promise<ITask[]> {
-        return ctx.findTasks([
+        let tasks = [
             Clean,
             StartServer,
             KarmaTest
-        ]);
+        ];
+        if (ctx.env.test === false || ctx.env === 'false') {
+            tasks.pop();
+        }
+        return ctx.findTasks(tasks);
         // return ctx.findTasksInDir(path.join(__dirname, './tasks'));
     }
 }
