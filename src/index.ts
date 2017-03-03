@@ -27,7 +27,7 @@ export class WebDefine implements IContextDefine {
             StartServer,
             KarmaTest
         ];
-        if (ctx.env.test === false || ctx.env === 'false') {
+        if (ctx.env.test === false || ctx.env.test === 'false') {
             tasks.pop();
         }
         return ctx.findTasks(tasks);
