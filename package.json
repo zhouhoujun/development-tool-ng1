@@ -1,68 +1,68 @@
 {
-  "name": "development-tool-web",
-  "version": "0.5.8",
-  "description": "development build tools for web client.",
-  "main": "./lib/index.js",
-  "typings": "./lib/index",
-  "scripts": {
-    "gulp": "gulp",
-    "postinstall": "npm prune",
-    "reinstall": "npm cache clean && npm install",
-    "test": "gulp build test",
-    "prepublish": "gulp build --release",
-    "e2e": "protractor",
-    "e2e.live": "protractor --elementExplorer"
-  },
-  "keywords": [
-    "development",
-    "tool",
-    "gulp",
-    "typescript",
-    "front-end",
-    "tasks",
-    "node",
-    "babel"
-  ],
-  "author": "houjun",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zhouhoujun/development-tool-web/issues"
-  },
-  "registry": "jspm",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/zhouhoujun/development-tool-web.git"
-  },
-  "dependencies": {
-    "@types/browser-sync": "0.0.34",
-    "@types/chalk": "^0.4.31",
-    "@types/gulp": "^3.8.32",
-    "@types/gulp-mocha": "0.0.29",
-    "@types/karma": "^0.13.33",
-    "browser-sync": "^2.17.5",
-    "chalk": "^1.1.3",
-    "checksum": "^0.1.1",
-    "del": "^2.2.1",
-    "development-core": "^0.10.3",
-    "glob": "^7.1.1",
-    "gulp": "^3.9.1",
-    "gulp-cached": "^1.1.0",
-    "gulp-mocha": "^3.0.1",
-    "gulp-sourcemaps": "^2.1.1",
-    "karma": "^1.3.0"
-  },
-  "devDependencies": {
-    "graceful-fs": "^4.0.0",
-    "bluebird": "^3.4.1",
-    "development-tool": "^0.10.2",
-    "development-assert-ts": "^0.6.1",
-    "development-tool-node": "^0.6.4",
-    "through2": "^2.0.1",
-    "ts-node": "^2.1.0",
-    "tslint": "^4.4.2",
-    "tslint-stylish": "^2.1.0",
-    "typescript": "^2.1.4",
-    "zone.js": "^0.6.10"
-  },
-  "homepage": "https://github.com/zhouhoujun/development-tool-web#readme"
+    "name": "development-tool-web",
+    "version": "0.5.9",
+    "description": "development build tools for web client.",
+    "main": "./lib/index.js",
+    "typings": "./lib/index",
+    "scripts": {
+        "gulp": "gulp",
+        "postinstall": "npm prune",
+        "reinstall": "npm cache clean && npm install",
+        "test": "gulp build test",
+        "prepublish": "gulp build --release",
+        "e2e": "protractor",
+        "e2e.live": "protractor --elementExplorer"
+    },
+    "keywords": [
+        "development",
+        "tool",
+        "gulp",
+        "typescript",
+        "front-end",
+        "tasks",
+        "node",
+        "babel"
+    ],
+    "author": "houjun",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/zhouhoujun/development-tool-web/issues"
+    },
+    "registry": "jspm",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/zhouhoujun/development-tool-web.git"
+    },
+    "dependencies": {
+        "@types/browser-sync": "0.0.34",
+        "@types/chalk": "^0.4.31",
+        "@types/gulp": "^3.8.32",
+        "@types/gulp-mocha": "0.0.29",
+        "@types/karma": "^0.13.33",
+        "browser-sync": "^2.17.5",
+        "chalk": "^1.1.3",
+        "checksum": "^0.1.1",
+        "del": "^2.2.1",
+        "development-core": "^0.10.4",
+        "glob": "^7.1.1",
+        "gulp": "^3.9.1",
+        "gulp-cached": "^1.1.0",
+        "gulp-mocha": "^3.0.1",
+        "gulp-sourcemaps": "^2.1.1",
+        "karma": "^1.3.0"
+    },
+    "devDependencies": {
+        "graceful-fs": "^4.0.0",
+        "bluebird": "^3.4.1",
+        "development-tool": "^0.10.3",
+        "development-assert-ts": "^0.6.1",
+        "development-tool-node": "^0.6.4",
+        "through2": "^2.0.1",
+        "ts-node": "^2.1.0",
+        "tslint": "^4.4.2",
+        "tslint-stylish": "^2.1.0",
+        "typescript": "^2.1.4",
+        "zone.js": "^0.6.10"
+    },
+    "homepage": "https://github.com/zhouhoujun/development-tool-web#readme"
 }
