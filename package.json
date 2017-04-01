@@ -39,7 +39,7 @@
         "@types/gulp": "^3.8.32",
         "@types/gulp-mocha": "0.0.29",
         "@types/karma": "^0.13.33",
-        "browser-sync": "^2.17.5",
+        "browser-sync": "^2.18.8",
         "chalk": "^1.1.3",
         "checksum": "^0.1.1",
         "del": "^2.2.1",
