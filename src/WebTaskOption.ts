@@ -1,5 +1,5 @@
 import { Src, IAsserts, ITaskContext, TaskSource, TaskString, IMap } from 'development-core';
-import { Options } from 'browser-sync';
+import { Options, FileCallback } from 'browser-sync';
 import * as karma from 'karma';
 
 /**
@@ -167,21 +167,18 @@ export interface KarmaJspmOption extends JspmOption {
     }
 }
 
-export interface IBrowsersyncOption {
-    /**
-    * browser server setting 
-    * @type {(Options | ((ctx: ITaskContext, defaultOptions?: Option) => Options))}
-    * @memberOf IWebTaskOption
-    */
-    browsersync?: Options | ((ctx: ITaskContext, defaultOptions?: Options) => Options);
-
+export interface IBrowsersyncOption extends Options {
     /**
      * server load files.
      * 
      * @type {(string[] | ((ctx: ITaskContext) => string[]))}
      * @memberOf IWebTaskOption
      */
-    files?: string[] | ((ctx: ITaskContext) => string[]);
+    files?: string | (string | FileCallback)[];
+    /**
+     * get files by context.
+     */
+    filesByCtx?: ((ctx: ITaskContext) => string | (string | FileCallback)[]);
 
     /**
      * server base dir.

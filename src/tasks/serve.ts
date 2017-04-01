@@ -19,23 +19,60 @@ export class StartServer implements ITask {
     }
     setup(ctx: ITaskContext, gulp: Gulp) {
         let option = (<IWebTaskOption>ctx.option).browsersync || {};
-        let files: string[] = null;
+        let watchOptions = option.watchOptions || { ignoreInitial: true, ignored: ['*.txt', '*.map', '*.d.ts'] };
+        let files: any[] = [];
         if (option.files) {
-            files = _.isFunction(option.files) ? option.files(ctx) : option.files;
+            let rf = ctx.to(option.files);
+            files = _.isArray(rf) ? rf : [rf];
         }
-        files = files || [];
+        if (option.filesByCtx) {
+            let dfs = ctx.to(option.filesByCtx);
+            if (_.isArray(dfs)) {
+                files = files.concat(dfs);
+            } else {
+                files.push(dfs);
+            }
+        }
+
         let pkg = ctx.getPackage();
+        let rootpath = ctx.getRootPath();
         let packagePath = '';
         if (option.jspm && option.jspm.packages) {
             packagePath = ctx.toRootPath(ctx.toStr(option.jspm.packages));
         } else {
             if (pkg.jspm && pkg.jspm && pkg.jspm.directories) {
                 packagePath = ctx.toRootPath(pkg.jspm.directories.packages);
+            } else {
+                packagePath = ctx.toRootPath('./node_modules');
             }
         }
 
-        if (packagePath) {
-            files.push(`${packagePath}/**/*`)
+
+        let hascfg = false;
+        let pkgname = path.basename(packagePath);
+        watchOptions.ignored = _.isArray(watchOptions.ignored) ? watchOptions.ignored : [watchOptions.ignored];
+        watchOptions.ignored.push(pkgname + '/**');
+        let pkgreg = new RegExp('/^' + pkgname + '\//', 'gi');
+        files = _.map(files || [], it => {
+            if (_.isString(it)) {
+                if (!hascfg) {
+                    hascfg = pkgreg.test(it);
+                }
+                return {
+                    match: it,
+                    options: watchOptions
+                }
+            } else {
+                return it;
+            }
+        });
+
+        if (!hascfg && packagePath) {
+            // files.push(`${path.relative(rootpath, packagePath)}/**`)
+            files.push({
+                match: `${path.relative(rootpath, packagePath)}/**`,
+                options: watchOptions
+            });
         }
 
         let dist = ctx.getDist(this.getInfo());
@@ -49,24 +86,37 @@ export class StartServer implements ITask {
         baseDir.push(path.dirname(packagePath));
         let relpkg = path.relative(_.first(baseDir), packagePath);
         if (/^\.\./.test(relpkg)) {
-            baseDir.push(ctx.getRootPath());
-            baseDir = _.uniq(baseDir);
+            baseDir.push(rootpath);
         }
 
-        files.push(`${dist}/**/*`);
+        baseDir = _.uniq(_.map(baseDir, dr => {
+            if (path.isAbsolute(dr)) {
+                return path.relative(rootpath, dr) || '.';
+            } else {
+                return dr;
+            }
+        }));
 
-        let browsersyncOption = {
-            server: {
-                baseDir: baseDir
+
+        files.push({
+            match: `${path.relative(rootpath, dist)}/**`,
+            options: watchOptions
+        });
+
+        let browsersyncOption = <browserSync.Options>_.extend(
+            {
+                open: true,
+                port: process.env.PORT || 3000
             },
-            open: true,
-            port: process.env.PORT || 3000,
-            files: files
-        };
+            _.omit(option, ['files', 'baseDir', 'jspm']),
+            {
+                watchOptions: watchOptions,
+                server: {
+                    baseDir: baseDir
+                },
+                files: files
+            });
 
-        if (option.browsersync) {
-            browsersyncOption = _.extend(browsersyncOption, _.isFunction(option.browsersync) ? option.browsersync(ctx, browsersyncOption) : option.browsersync);
-        }
         let tkn = ctx.subTaskName(this.info);
         gulp.task(tkn, (callback: TaskCallback) => {
             browserSync(browsersyncOption, (err, bs) => {
