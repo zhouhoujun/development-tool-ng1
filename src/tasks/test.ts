@@ -150,17 +150,12 @@ export class KarmaTest implements ITask {
             jspmcfg.paths['/' + jspmpk] = 'base/' + rlpk;
 
 
-            let res: Src;
-            if (_.isFunction(karmajspm.resource)) {
-                res = karmajspm.resource(ctx);
-            } else {
-                res = karmajspm.resource || ['public', 'asserts'];
-            }
+            let res: Src = ctx.to(karmajspm.resource) || ['public', 'asserts'];
             let relpth = ctx.toUrl(root, ctx.getDist());
             cfg.proxies = cfg.proxies || {};
             cfg.files = cfg.files || [];
             _.each(_.isString(res) ? [res] : res, r => {
-                cfg.files.push({ pattern: ctx.toUrl(ctx.toDistPath(r)) + '/**', included: false });
+                cfg.files.push({ pattern: ctx.toUrl(root, ctx.toDistPath(r)) + '/**', included: false });
 
                 let abr = /^\//.test(r) ? ('base' + r) : ('base/' + r);
                 cfg.proxies[abr] = url.resolve(relpth, r);
@@ -314,7 +309,7 @@ export class KarmaTest implements ITask {
     var stripExtension = typeof karma.config.jspm.stripExtension === 'boolean' ? karma.config.jspm.stripExtension : true;
 
     // Prevent immediately starting tests.
-    karma.loaded = function() {
+    karma.loaded  = function() {
 
         if (karma.config.jspm.paths !== undefined &&
             typeof karma.config.jspm.paths === 'object') {
