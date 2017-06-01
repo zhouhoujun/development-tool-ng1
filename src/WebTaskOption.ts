@@ -219,7 +219,7 @@ export interface IKarmaOption {
     /**
      * karma test config setting.
      * @type {((ctx: ITaskContext) => karmaConfig)}
-     * 
+     *
      * @memberOf IWebTaskOption
      */
     config?: ((ctx: ITaskContext) => karma.ConfigOptions);
@@ -231,6 +231,11 @@ export interface IWebTaskOption extends IAsserts {
     browsersync?: IBrowsersyncOption;
 
     karma?: IKarmaOption;
+
+    /**
+     * force test
+     */
+    forceTest?: boolean;
 
 }
 
