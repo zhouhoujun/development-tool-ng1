@@ -204,4 +204,8 @@ export interface IKarmaOption {
 export interface IWebTaskOption extends IAsserts {
     browsersync?: IBrowsersyncOption;
     karma?: IKarmaOption;
+    /**
+     * force test
+     */
+    forceTest?: boolean;
 }

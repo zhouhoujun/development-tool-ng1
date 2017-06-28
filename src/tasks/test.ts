@@ -247,7 +247,7 @@ export class KarmaTest implements ITask {
             }
 
             files.unshift(createPattern(adapterfile));
-            let sysjs = karmajspm.systemjs ? ctx.toSrc(karmajspm.systemjs) : ['system-polyfills.src', 'system.src'];
+            let sysjs = karmajspm.systemjs ? ctx.toSrc(karmajspm.systemjs) : ['system-polyfills', 'system'];
             _.each(_.isArray(sysjs) ? sysjs : [sysjs], sf => {
                 files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, sf))));
             });
@@ -273,7 +273,7 @@ export class KarmaTest implements ITask {
             // Allow Karma to serve all files within jspm_packages.
             // This allows jspm/SystemJS to load them
             var jspmPattern = createServedPattern(
-                ctx.toUrl(path.join(packagesPath, '!(system-polyfills.src.js|system.src.js)/**')), { nocache: jspm.cachePackages !== true }
+                ctx.toUrl(path.join(packagesPath, '!(system-polyfills.js|system.js|system-polyfills.src.js|system.src.js)/**')), { nocache: jspm.cachePackages !== true }
             );
             jspmPattern.watched = false;
             files.push(jspmPattern);

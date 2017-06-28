@@ -4,7 +4,7 @@ import { ITask, ITaskConfig, bindingConfig, ITaskContext, IContextDefine, taskde
 import { Clean } from './tasks/clean';
 import { StartServer } from './tasks/serve';
 import { KarmaTest } from './tasks/test';
-
+import { IWebTaskOption } from './WebTaskOption';
 export * from './WebTaskOption';
 
 
@@ -27,7 +27,8 @@ export class WebDefine implements IContextDefine {
             StartServer,
             KarmaTest
         ];
-        if (ctx.env.test === false || ctx.env.test === 'false') {
+        let option: IWebTaskOption = ctx.option;
+        if (option.forceTest === false || ctx.env.test === false || ctx.env.test === 'false') {
             tasks.pop();
         }
         return ctx.findTasks(tasks);
