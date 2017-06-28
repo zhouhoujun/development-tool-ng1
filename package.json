@@ -43,7 +43,7 @@
         "chalk": "^1.1.3",
         "checksum": "^0.1.1",
         "del": "^2.2.1",
-        "development-core": "^1.*",
+        "development-core": "^2.0.0-beta",
         "glob": "^7.1.1",
         "gulp": "^3.9.1",
         "gulp-cached": "^1.1.0",
@@ -54,7 +54,7 @@
     "devDependencies": {
         "graceful-fs": "^4.0.0",
         "bluebird": "^3.4.1",
-        "development-tool": "^1.*",
+        "development-tool": "^2.0.0-beta",
         "development-assert-ts": "^1.*",
         "development-tool-node": "^1.*",
         "through2": "^2.0.1",

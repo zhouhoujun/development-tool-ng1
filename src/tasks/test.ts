@@ -29,7 +29,7 @@ export class KarmaTest implements ITask {
 
         let tkn = ctx.subTaskName(this.getInfo());
         gulp.task(tkn, (callback: TaskCallback) => {
-            let karmaConfigFile = option.configFile || path.join(ctx.env.root, './karma.conf.js');
+            let karmaConfigFile = option.configFile || path.join(ctx.getRootPath(), './karma.conf.js');
             karmaConfigFile = ctx.toRootPath(karmaConfigFile);
             let cfg: karma.ConfigOptions = {};
             // get config.
