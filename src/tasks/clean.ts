@@ -6,7 +6,7 @@ import { ITask, ITaskInfo, Operation, task, ITaskContext } from 'development-cor
 const del = require('del');
 
 @task({
-    order: 0,
+    // order: 0,
     oper: Operation.clean | Operation.default
 })
 export class Clean implements ITask {

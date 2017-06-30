@@ -7,7 +7,7 @@ import * as browserSync from 'browser-sync';
 import * as path from 'path';
 
 @task({
-    order: (total, ctx) => ctx.env.test ? { value: 2 / total, runWay: RunWay.parallel } : 1, // last order.
+    // order: (total, ctx) => ctx.env.test ? { value: 2 / total, runWay: RunWay.parallel } : 1, // last order.
     oper: Operation.default | Operation.serve
 })
 export class StartServer implements ITask {
