@@ -5,5 +5,5 @@ export declare class StartServer implements ITask {
     private info;
     constructor(info: ITaskInfo);
     getInfo(): ITaskInfo;
-    setup(ctx: ITaskContext, gulp: Gulp): any;
+    setup(ctx: ITaskContext, gulp: Gulp): string;
 }
