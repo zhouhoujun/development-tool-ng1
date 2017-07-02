@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { ITask, RunWay, ITaskConfig, IAssertOption, IEnvOption, ITaskContext, IContextDefine, taskdefine } from 'development-core';
+import { ITask, Operation, RunWay, ITaskConfig, IAssertOption, IEnvOption, ITaskContext, IContextDefine, taskdefine } from 'development-core';
 import { Clean } from './tasks/clean';
 import { StartServer } from './tasks/serve';
 import { KarmaTest } from './tasks/test';
@@ -11,7 +11,9 @@ export * from './WebTaskOption';
 export class WebDefine implements IContextDefine {
     loadConfig(option: IAssertOption, env: IEnvOption): ITaskConfig {
         // register default asserts.
-        option.assertsOrder = 0;
+        if (_.isUndefined(option.assertsOrder)) {
+            option.assertsOrder = 0;
+        }
         option.asserts = _.extend({
             ts: 'development-assert-ts',
             js: 'development-assert-js'
@@ -38,15 +40,17 @@ export class WebDefine implements IContextDefine {
                 }
             });
         }
-        ctx.add(<ITaskConfig>{
-            option: <IAssertOption>{
-                name: 'serve',
-                order: (total, ctx) => ctx.env.test ? { value: 2 / total, runWay: RunWay.parallel } : 1,
-                loader: (ctx) => {
-                    return ctx.findTasks(StartServer);
+        if (ctx.oper & Operation.serve) {
+            ctx.add(<ITaskConfig>{
+                option: <IAssertOption>{
+                    name: 'serve',
+                    order: (total, ctx) => ctx.env.test ? { value: 2 / total, runWay: RunWay.parallel } : 1,
+                    loader: (ctx) => {
+                        return ctx.findTasks(StartServer);
+                    }
                 }
-            }
-        })
+            });
+        }
     }
 
     tasks(ctx: ITaskContext): Promise<ITask[]> {
