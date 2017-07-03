@@ -37,8 +37,8 @@ export class StartServer implements ITask {
         let pkg = ctx.getPackage();
         let rootpath = ctx.getRootPath();
         let packagePath = '';
-        if (option.jspm && option.jspm.packages) {
-            packagePath = ctx.toRootPath(ctx.toStr(option.jspm.packages));
+        if (option.systemjs && option.systemjs.packages) {
+            packagePath = ctx.toRootPath(ctx.toStr(option.systemjs.packages));
         } else {
             if (pkg.jspm && pkg.jspm && pkg.jspm.directories) {
                 packagePath = ctx.toRootPath(pkg.jspm.directories.packages);

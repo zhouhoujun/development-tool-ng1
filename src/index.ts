@@ -31,8 +31,9 @@ export class WebDefine implements IContextDefine {
 
         if (webOption.forceTest !== false && webOption.test !== false) {
             ctx.add(<ITaskConfig>{
-                option: <IAssertOption>{
+                option: <IWebTaskOption>{
                     name: 'test',
+                    karma: webOption.karma,
                     order: webOption.testOrder || (total => { return { value: 2 / total, runWay: RunWay.parallel } }),
                     loader: (ctx) => {
                         return ctx.findTasks(KarmaTest);
@@ -42,8 +43,9 @@ export class WebDefine implements IContextDefine {
         }
         if (ctx.oper & Operation.serve) {
             ctx.add(<ITaskConfig>{
-                option: <IAssertOption>{
+                option: <IWebTaskOption>{
                     name: 'serve',
+                    browsersync: webOption.browsersync,
                     order: (total, ctx) => ctx.env.test ? { value: 2 / total, runWay: RunWay.parallel } : 1,
                     loader: (ctx) => {
                         return ctx.findTasks(StartServer);

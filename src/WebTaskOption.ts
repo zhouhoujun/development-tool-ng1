@@ -6,9 +6,9 @@ import * as karma from 'karma';
  * jspm mate.
  * 
  * @export
- * @interface IJspmMate
+ * @interface ISystemjsMate
  */
-export interface IJspmMate {
+export interface ISystemjsMate {
     loader: string;
 }
 
@@ -20,28 +20,28 @@ export type LoaderFilePattern = FilePattern[] | ((ctx: ITaskContext) => FilePatt
  * jspm Option.
  * 
  * @export
- * @interface JspmOption
+ * @interface SystemjsOption
  */
-export interface JspmOption {
+export interface SystemjsOption {
     /**
       * baseURL for test path.
       * 
       * @type {TaskString}
-      * @memberOf JspmOption
+      * @memberOf SystemjsOption
       */
     baseURL?: TaskString;
     /**
      * config file. default use package setting.
      * 
      * @type {TaskSource}
-     * @memberOf JspmOption
+     * @memberOf SystemjsOption
      */
     config?: TaskSource;
     /**
      * jspm package path. default use package setting.
      * 
      * @type {TaskString}
-     * @memberOf JspmOption
+     * @memberOf SystemjsOption
      */
     packages?: TaskString;
 
@@ -49,7 +49,7 @@ export interface JspmOption {
      * systemjs files.
      * 
      * @type {TaskSource}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     systemjs?: TaskSource;
 }
@@ -57,55 +57,55 @@ export interface JspmOption {
  * karma jspm test config.
  * 
  * @export
- * @interface KarmaJspm
+ * @interface KarmaSystemjs
  */
-export interface KarmaJspm extends JspmOption {
+export interface KarmaSystemjs extends SystemjsOption {
     /**
      * baseURL for test path.
      * 
      * @type {string}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     baseURL?: string;
     /**
      * config file. default use package setting.
      * 
      * @type {Src}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     config?: Src;
     /**
      * jspm package path. default use package setting.
      * 
      * @type {string}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     packages?: string;
     /**
      * load test files.
      * 
      * @type {FilePattern[]}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     loadFiles?: FilePattern[]
     /**
      * server files.
      * 
      * @type {FilePattern[]}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     serveFiles?: FilePattern[];
     /**
      * need jspm ^0.17 
      * 
      * @type {string}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     browser?: string;
 
     paths?: IMap<string>;
 
-    meta?: IMap<IJspmMate>;
+    meta?: IMap<ISystemjsMate>;
 
     useBundles?: boolean;
 
@@ -118,42 +118,42 @@ export interface KarmaJspm extends JspmOption {
  * karma jspm test config.
  * 
  * @export
- * @interface KarmaJspm
+ * @interface KarmaSystemjs
  */
-export interface KarmaJspmOption extends JspmOption {
+export interface KarmaSystemjsOption extends SystemjsOption {
     /**
      * public resource to root.
      * 
      * @type {TaskSource}
-     * @memberOf KarmaJspmOption
+     * @memberOf KarmaSystemjsOption
      */
     resource?: TaskSource;
     /**
      * load test files.
      * 
      * @type {TaskSource}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     loadFiles?: LoaderFilePattern
     /**
      * server files.
      * 
      * @type {TaskSource}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     serveFiles?: LoaderFilePattern;
     /**
      * need jspm ^0.17 
      * 
      * @type {TaskString}
-     * @memberOf KarmaJspm
+     * @memberOf KarmaSystemjs
      */
     browser?: TaskString;
 
 
     paths?: IMap<string>;
 
-    meta?: IMap<IJspmMate>;
+    meta?: IMap<ISystemjsMate>;
 
     useBundles?: boolean;
 
@@ -188,18 +188,23 @@ export interface IBrowsersyncOption extends Options {
      */
     baseDir?: TaskSource;
 
-    jspm?: JspmOption;
+    /**
+     * systemjs option.
+     *
+     * @type {SystemjsOption}
+     * @memberof IBrowsersyncOption
+     */
+    systemjs?: SystemjsOption;
 }
 
 export interface IKarmaOption {
 
     /**
      * karma jspm  test
-     * 
-     * 
+     *
      * @memberOf IWebTaskOption
      */
-    jspm?: boolean | KarmaJspmOption | ((ctx: ITaskContext) => KarmaJspmOption);
+    systemjs?: boolean | KarmaSystemjsOption | ((ctx: ITaskContext) => KarmaSystemjsOption);
 
     /**
      * karma test base path.  default context dist.

@@ -11,7 +11,7 @@ const glob = require('glob');
 const mkdirp = require('mkdirp');
 import * as url from 'url';
 // import * as mocha from 'gulp-mocha';
-import { IWebTaskOption, KarmaJspmOption, KarmaJspm } from '../WebTaskOption';
+import { IWebTaskOption, KarmaSystemjsOption, KarmaSystemjs } from '../WebTaskOption';
 
 @task({
     // order: total => { return { value: 2 / total, runWay: RunWay.parallel } },
@@ -21,7 +21,7 @@ export class KarmaTest implements ITask {
     constructor(private info: ITaskInfo) {
     }
     getInfo() {
-        this.info.name = this.info.name || 'web-test';
+        this.info.name = this.info.name || 'karma';
         return this.info;
     }
     setup(ctx: ITaskContext, gulp: Gulp) {
@@ -42,7 +42,7 @@ export class KarmaTest implements ITask {
                 cfg = option.config(ctx);
             }
 
-            cfg = <karma.ConfigOptions>_.extend(cfg, { singleRun: ctx.env.release || ctx.env.deploy || ctx.env.watch !== true });
+            cfg = <karma.ConfigOptions>_.extend(cfg, { singleRun: ((ctx.oper & Operation.release) > 0) || ((ctx.oper & Operation.watch) === 0) });
             if (option.basePath) {
                 cfg.basePath = ctx.toStr(option.basePath);
             } else if (_.isUndefined(cfg.basePath)) {
@@ -51,10 +51,16 @@ export class KarmaTest implements ITask {
 
             cfg.basePath = ctx.toRootPath(cfg.basePath);
 
-            if (option.jspm) {
-                cfg.files = cfg.files || [];
-                cfg = this.initkarmaJspmPlugin(cfg, ctx);
+            if (!option.systemjs && option['jspm']) {
+                option.systemjs = option['jspm']
             }
+            // console.log('before init option:----------------------------\n', ctx.option);
+            if (option.systemjs) {
+                cfg.files = cfg.files || [];
+                cfg = this.initkarmaSystemjsPlugin(cfg, ctx);
+            }
+
+            // console.log('cfg:----------------------------\n', cfg);
 
             let serve = new karma.Server(
                 cfg,
@@ -89,7 +95,7 @@ export class KarmaTest implements ITask {
         });
         let p = '*'
         paths[p] = prefix + ctx.toUrl(rootpath, path.join(bundleDest, p));
-        // let jpk = <string>option.jspmPackages;
+        // let jpk = <string>option.systemjsPackages;
         // let jp = path.basename(jpk) + '/*';
         // paths[jp] = self.toUrl(rootpath, path.join(jpk, jp));
 
@@ -97,60 +103,62 @@ export class KarmaTest implements ITask {
     }
 
 
-    initkarmaJspmPlugin(cfg: karma.ConfigOptions, ctx: ITaskContext): karma.ConfigOptions {
+    initkarmaSystemjsPlugin(cfg: karma.ConfigOptions, ctx: ITaskContext): karma.ConfigOptions {
         let option = (<IWebTaskOption>ctx.option).karma || {};
         let pkg = ctx.getPackage();
 
-        let karmajspm: KarmaJspmOption;
-        if (_.isFunction(option.jspm)) {
-            karmajspm = option.jspm(ctx);
+        let karmaSystemjs: KarmaSystemjsOption;
+        if (_.isFunction(option.systemjs)) {
+            karmaSystemjs = option.systemjs(ctx);
         } else if (_.isBoolean(karma)) {
-            karmajspm = {};
+            karmaSystemjs = {};
         } else {
-            karmajspm = option.jspm;
+            karmaSystemjs = option.systemjs;
         }
-        let jspmcfg: KarmaJspm = cfg['jspm'] || {};
+        let syscfg: KarmaSystemjs = cfg['systemjs'] || cfg['jspm'] || {};
 
-        let adapterfile = ctx.toUrl(this.checkAdapter(karmajspm, ctx));
+        let adapterfile = ctx.toUrl(this.checkAdapter(karmaSystemjs, ctx));
 
-        if (karmajspm.packages) {
-            jspmcfg.packages = ctx.toRootPath(ctx.toStr(karmajspm.packages));
+        if (karmaSystemjs.packages) {
+            syscfg.packages = ctx.toRootPath(ctx.toStr(karmaSystemjs.packages));
         } else {
-            if (!jspmcfg.packages && pkg.jspm && pkg.jspm.directories) {
-                jspmcfg.packages = ctx.toRootPath(pkg.jspm.directories.packages);
-            } else if (jspmcfg.packages) {
-                jspmcfg.packages = ctx.toRootPath(jspmcfg.packages);
+            if (!syscfg.packages && pkg.systemjs && pkg.systemjs.directories) {
+                syscfg.packages = ctx.toRootPath(pkg.systemjs.directories.packages);
+            } else if (syscfg.packages) {
+                syscfg.packages = ctx.toRootPath(syscfg.packages);
             }
         }
-        if (karmajspm.config) {
-            jspmcfg.config = ctx.toDistSrc(ctx.toSrc(karmajspm.config));
+        if (karmaSystemjs.config) {
+            syscfg.config = ctx.toDistSrc(ctx.toSrc(karmaSystemjs.config));
         } else {
-            if (!jspmcfg.config && pkg.jspm) {
-                jspmcfg.config = ctx.toRootPath(pkg.jspm.configFile);
-            } else if (jspmcfg.config) {
-                jspmcfg.config = ctx.toDistSrc(jspmcfg.config);
+            if (!syscfg.config && pkg.systemjs) {
+                syscfg.config = ctx.toRootPath(pkg.systemjs.configFile);
+            } else if (syscfg.config) {
+                syscfg.config = ctx.toDistSrc(syscfg.config);
             }
         }
 
-        jspmcfg.config = _.isString(jspmcfg.config) ? ctx.toUrl(jspmcfg.config) : _.map(jspmcfg.config, it => ctx.toUrl(it));
+        syscfg.config = _.isString(syscfg.config) ? ctx.toUrl(syscfg.config) : _.map(syscfg.config, it => ctx.toUrl(it));
 
-        jspmcfg.baseURL = ctx.toStr(karmajspm.baseURL || jspmcfg.baseURL || '');
-        if (!_.isUndefined(karmajspm.cachePackages)) {
-            jspmcfg.cachePackages = karmajspm.cachePackages;
+        syscfg.baseURL = ctx.toStr(karmaSystemjs.baseURL || syscfg.baseURL || '');
+        if (!_.isUndefined(karmaSystemjs.cachePackages)) {
+            syscfg.cachePackages = karmaSystemjs.cachePackages;
         }
 
-        let relpkg = ctx.toUrl(cfg.basePath, jspmcfg.packages);
+        console.log('packages:------------------------\n', syscfg.packages);
+
+        let relpkg = ctx.toUrl(cfg.basePath, syscfg.packages);
         let resetBase = false;
         if (/^\.\./.test(relpkg)) {
             resetBase = true;
             let root = cfg.basePath = ctx.getRootPath();
-            jspmcfg.paths = this.getRelativePaths(ctx, cfg.basePath); // , 'base/');
-            let rlpk = ctx.toUrl(root, jspmcfg.packages) + '/*';
-            let jspmpk = path.basename(jspmcfg.packages) + '/*';
-            jspmcfg.paths['/' + jspmpk] = 'base/' + rlpk;
+            syscfg.paths = this.getRelativePaths(ctx, cfg.basePath); // , 'base/');
+            let rlpk = ctx.toUrl(root, syscfg.packages) + '/*';
+            let systempk = path.basename(syscfg.packages) + '/*';
+            syscfg.paths['/' + systempk] = 'base/' + rlpk;
 
 
-            let res: Src = ctx.to(karmajspm.resource) || ['public', 'asserts'];
+            let res: Src = ctx.to(karmaSystemjs.resource) || ['public', 'asserts'];
             let relpth = ctx.toUrl(root, ctx.getDist());
             cfg.proxies = cfg.proxies || {};
             cfg.files = cfg.files || [];
@@ -161,29 +169,25 @@ export class KarmaTest implements ITask {
                 cfg.proxies[abr] = url.resolve(relpth, r);
             });
 
-            // jspmcfg.paths = jspmcfg.paths || {};
-            // jspmcfg.baseURL = ctx.toUrl(root, ctx.getDist());
-            // let rlpk = ctx.toUrl(root, jspmcfg.packages) + '/*';
-            // jspmcfg.paths[rlpk] = '/base/' + rlpk;
-            console.log('paths: ', jspmcfg.paths);
+            console.log('paths: ', syscfg.paths);
 
-            cfg.proxies = _.extend(cfg.proxies, jspmcfg.paths);
-            cfg.proxies[path.basename(jspmcfg.packages)] = ctx.toUrl(root, jspmcfg.packages);
+            cfg.proxies = _.extend(cfg.proxies, syscfg.paths);
+            cfg.proxies[path.basename(syscfg.packages)] = ctx.toUrl(root, syscfg.packages);
             console.log('proxies: ', cfg.proxies);
         }
 
-        jspmcfg.loadFiles = jspmcfg.loadFiles || [];
-        jspmcfg.serveFiles = jspmcfg.serveFiles || [];
+        syscfg.loadFiles = syscfg.loadFiles || [];
+        syscfg.serveFiles = syscfg.serveFiles || [];
 
-        if (karmajspm.loadFiles) {
-            jspmcfg.loadFiles = jspmcfg.loadFiles.concat(_.isFunction(karmajspm.loadFiles) ? karmajspm.loadFiles(ctx) : karmajspm.loadFiles);
+        if (karmaSystemjs.loadFiles) {
+            syscfg.loadFiles = syscfg.loadFiles.concat(_.isFunction(karmaSystemjs.loadFiles) ? karmaSystemjs.loadFiles(ctx) : karmaSystemjs.loadFiles);
         }
-        if (karmajspm.serveFiles) {
-            jspmcfg.serveFiles = jspmcfg.serveFiles.concat(_.isFunction(karmajspm.serveFiles) ? karmajspm.serveFiles(ctx) : karmajspm.serveFiles);
+        if (karmaSystemjs.serveFiles) {
+            syscfg.serveFiles = syscfg.serveFiles.concat(_.isFunction(karmaSystemjs.serveFiles) ? karmaSystemjs.serveFiles(ctx) : karmaSystemjs.serveFiles);
         }
 
-        cfg.plugins = _.filter(cfg.plugins || [], it => it !== 'karma-jspm');
-        cfg.frameworks = _.filter(cfg.frameworks || [], it => it !== 'jspm');
+        cfg.plugins = _.filter(cfg.plugins || [], it => it !== 'karma-systemjs');
+        cfg.frameworks = _.filter(cfg.frameworks || [], it => it !== 'systemjs');
         // clean.
 
         cfg.plugins = cfg.plugins.concat(_.map(cfg.frameworks, it => 'karma-' + it.toLowerCase()));
@@ -205,34 +209,34 @@ export class KarmaTest implements ITask {
 
 
 
-        let initJspm: any = (files: (karma.FilePattern | string)[], basePath: string, jspm: KarmaJspm, client, emitter) => {
-            console.log('--------------------init karma jspm---------------------\n', 'base path:', chalk.cyan(basePath));
-            jspm = jspm || {}
+        let initSystemjs: any = (files: (karma.FilePattern | string)[], basePath: string, systemjs: KarmaSystemjs, client, emitter) => {
+            console.log('--------------------init karma systemjs---------------------\n', 'base path:', chalk.cyan(basePath));
+            systemjs = systemjs || {}
 
-            jspm = _.extend(jspm || {}, jspmcfg);
+            systemjs = _.extend(systemjs || {}, syscfg);
 
-            client.jspm = client.jspm || {};
-            if (jspm.paths !== undefined && typeof jspm.paths === 'object') {
-                client.jspm.paths = jspm.paths;
+            client.systemjs = client.systemjs || {};
+            if (systemjs.paths !== undefined && typeof systemjs.paths === 'object') {
+                client.systemjs.paths = systemjs.paths;
             }
-            if (jspm.meta !== undefined && typeof jspm.meta === 'object') {
-                client.jspm.meta = jspm.meta;
+            if (systemjs.meta !== undefined && typeof systemjs.meta === 'object') {
+                client.systemjs.meta = systemjs.meta;
             }
             // Pass on options to client
-            client.jspm.useBundles = jspm.useBundles;
-            client.jspm.stripExtension = jspm.stripExtension;
+            client.systemjs.useBundles = systemjs.useBundles;
+            client.systemjs.stripExtension = systemjs.stripExtension;
 
-            let baseURL = jspm.baseURL;
-            client.jspm.baseURL = baseURL || '';
+            let baseURL = systemjs.baseURL;
+            client.systemjs.baseURL = baseURL || '';
 
             console.log('base URL:', chalk.cyan(baseURL));
             let fileBasePath = ctx.toUrl(resetBase ? ctx.getDist() : path.join(basePath, baseURL));
             console.log('fileBasePath', fileBasePath);
 
-            let packagesPath = ctx.toUrl(jspm.packages);
-            let browserPath = ctx.toUrl(ctx.toRootPath(ctx.toStr(jspm.browser || '')));
-            let configPaths: string[] = Array.isArray(jspm.config) ? <string[]>jspm.config : [<string>jspm.config];
-            // Add SystemJS loader and jspm config
+            let packagesPath = ctx.toUrl(systemjs.packages);
+            let browserPath = ctx.toUrl(ctx.toRootPath(ctx.toStr(systemjs.browser || '')));
+            let configPaths: string[] = Array.isArray(systemjs.config) ? <string[]>systemjs.config : [<string>systemjs.config];
+            // Add SystemJS loader and systemjs config
 
 
             Array.prototype.unshift.apply(files,
@@ -242,49 +246,49 @@ export class KarmaTest implements ITask {
             );
 
             // Needed for JSPM 0.17 beta
-            if (jspm.browser) {
+            if (systemjs.browser) {
                 files.unshift(createPattern(browserPath));
             }
 
             files.unshift(createPattern(adapterfile));
-            let sysjs = karmajspm.systemjs ? ctx.toSrc(karmajspm.systemjs) : ['system-polyfills', 'system'];
+            let sysjs = karmaSystemjs.systemjs ? ctx.toSrc(karmaSystemjs.systemjs) : ['system-polyfills', 'system'];
             _.each(_.isArray(sysjs) ? sysjs : [sysjs], sf => {
                 files.unshift(createPattern(ctx.toUrl(getPackageFilePath(packagesPath, sf))));
             });
 
             function addExpandedFiles() {
-                client.jspm.expandedFiles = _.flatten(_.map(jspm.loadFiles, file => {
+                client.systemjs.expandedFiles = _.flatten(_.map(systemjs.loadFiles, file => {
                     let flname = path.join(fileBasePath, _.isString(file) ? file : file.pattern);
                     files.push(createServedPattern(ctx.toUrl(flname), _.isString(file) ? null : file));
                     return _.map(glob.sync(flname), (fm: string) => ctx.toUrl(fileBasePath, fm));
                 }));
 
-                console.log('expandedFiles:', client.jspm.expandedFiles);
+                console.log('expandedFiles:', client.systemjs.expandedFiles);
             }
             addExpandedFiles();
 
             emitter.on('file_list_modified', addExpandedFiles);
 
             // Add served files to files array
-            _.each(jspm.serveFiles, file => {
+            _.each(systemjs.serveFiles, file => {
                 files.push(createServedPattern(ctx.toUrl(path.join(fileBasePath, _.isString(file) ? file : file.pattern))));
             });
 
-            // Allow Karma to serve all files within jspm_packages.
-            // This allows jspm/SystemJS to load them
-            var jspmPattern = createServedPattern(
-                ctx.toUrl(path.join(packagesPath, '!(system-polyfills.js|system.js|system-polyfills.src.js|system.src.js)/**')), { nocache: jspm.cachePackages !== true }
+            // Allow Karma to serve all files within systemjs_packages.
+            // This allows systemjs/SystemJS to load them
+            var systemjsPattern = createServedPattern(
+                ctx.toUrl(path.join(packagesPath, '!(system-polyfills.js|system.js|system-polyfills.src.js|system.src.js)/**')), { nocache: systemjs.cachePackages !== true }
             );
-            jspmPattern.watched = false;
-            files.push(jspmPattern);
+            systemjsPattern.watched = false;
+            files.push(systemjsPattern);
 
-            console.log('------------------------complete jspm pattern:\n', files);
+            console.log('------------------------complete systemjs pattern:\n', files);
         };
-        initJspm.$inject = ['config.files', 'config.basePath', 'config.jspm', 'config.client', 'emitter'];
+        initSystemjs.$inject = ['config.files', 'config.basePath', 'config.systemjs', 'config.client', 'emitter'];
 
-        cfg.frameworks.unshift('jspmdev');
+        cfg.frameworks.unshift('systemjsdev');
         cfg.plugins.unshift({
-            'framework:jspmdev': ['factory', initJspm]
+            'framework:systemjsdev': ['factory', initSystemjs]
         });
 
         return cfg;
@@ -298,47 +302,47 @@ export class KarmaTest implements ITask {
 (function(karma, System) {
     if (!System) {
         throw new Error('SystemJS was not found. Please make sure you have ' +
-            'initialized jspm via installing a dependency with jspm, ' +
-            'or by running "jspm dl-loader".');
+            'initialized systemjs via installing a dependency with systemjs, ' +
+            'or by running "systemjs dl-loader".');
     }
 
 
-    System.config({ baseURL: karma.config.jspm.baseURL?  'base/'+ karma.config.jspm.baseURL : 'base' });
+    System.config({ baseURL: karma.config.systemjs.baseURL?  'base/'+ karma.config.systemjs.baseURL : 'base' });
     
 
-    var stripExtension = typeof karma.config.jspm.stripExtension === 'boolean' ? karma.config.jspm.stripExtension : true;
+    var stripExtension = typeof karma.config.systemjs.stripExtension === 'boolean' ? karma.config.systemjs.stripExtension : true;
 
     // Prevent immediately starting tests.
     karma.loaded  = function() {
 
-        if (karma.config.jspm.paths !== undefined &&
-            typeof karma.config.jspm.paths === 'object') {
+        if (karma.config.systemjs.paths !== undefined &&
+            typeof karma.config.systemjs.paths === 'object') {
 
             System.config({
-                paths: karma.config.jspm.paths
+                paths: karma.config.systemjs.paths
             });
         }
 
-        if (karma.config.jspm.meta !== undefined &&
-            typeof karma.config.jspm.meta === 'object') {
+        if (karma.config.systemjs.meta !== undefined &&
+            typeof karma.config.systemjs.meta === 'object') {
             System.config({
-                meta: karma.config.jspm.meta
+                meta: karma.config.systemjs.meta
             });
         }
 
         // Exclude bundle configurations if useBundles option is not specified
-        if (!karma.config.jspm.useBundles) {
+        if (!karma.config.systemjs.useBundles) {
             System.bundles = [];
         }
 
         // Load everything specified in loadFiles in the specified order
         var promiseChain = Promise.resolve();
-        for (var i = 0; i < karma.config.jspm.expandedFiles.length; i++) {
+        for (var i = 0; i < karma.config.systemjs.expandedFiles.length; i++) {
             promiseChain = promiseChain.then((function(moduleName) {
                 return function() {
                     return System['import'](moduleName);
                 };
-            })(extractModuleName(karma.config.jspm.expandedFiles[i])));
+            })(extractModuleName(karma.config.systemjs.expandedFiles[i])));
         }
 
         promiseChain.then(function() {
@@ -359,9 +363,9 @@ export class KarmaTest implements ITask {
     }
 
 
-    checkAdapter(karmajspm: KarmaJspmOption, ctx: ITaskContext): string {
+    checkAdapter(sysKarma: KarmaSystemjsOption, ctx: ITaskContext): string {
 
-        let templ = karmajspm.karmaloader;
+        let templ = sysKarma.karmaloader;
         let defaultTempl = this.getDefaultAdapter();
         if (!templ) {
             templ = defaultTempl;
