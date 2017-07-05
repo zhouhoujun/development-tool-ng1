@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as chalk from 'chalk';
 import { TaskCallback, Gulp } from 'gulp';
 // import * as path from 'path';
-import { Src, ITask, ITaskInfo, Operation, task, ITaskContext, RunWay } from 'development-core';
+import { Src, ITask, ITaskInfo, Operation, task, ITaskContext } from 'development-core';
 // import * as chalk from 'chalk';
 import * as karma from 'karma';
 import * as fs from 'fs';
@@ -10,7 +10,6 @@ import * as path from 'path';
 const glob = require('glob');
 const mkdirp = require('mkdirp');
 import * as url from 'url';
-// import * as mocha from 'gulp-mocha';
 import { IWebTaskOption, KarmaSystemjsOption, KarmaSystemjs } from '../WebTaskOption';
 
 @task({
