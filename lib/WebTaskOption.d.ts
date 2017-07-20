@@ -154,8 +154,8 @@ export interface IBrowsersyncOption extends Options {
     /**
      * server load files.
      *
-     * @type {(string[] | ((ctx: ITaskContext) => string[]))}
-     * @memberOf IWebTaskOption
+     * @type {(string | (string | FileCallback)[])}
+     * @memberof IBrowsersyncOption
      */
     files?: string | (string | FileCallback)[];
     /**
