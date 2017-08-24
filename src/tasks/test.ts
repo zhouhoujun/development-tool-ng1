@@ -112,7 +112,7 @@ export class KarmaTest implements ITask {
         } else if (_.isBoolean(karma)) {
             karmaSystemjs = {};
         } else {
-            karmaSystemjs = option.systemjs;
+            karmaSystemjs = option.systemjs as KarmaSystemjsOption;
         }
         let syscfg: KarmaSystemjs = cfg['systemjs'] || cfg['jspm'] || {};
 
@@ -381,7 +381,7 @@ export class KarmaTest implements ITask {
         }
         mkdirp.sync(path.dirname(adapterfile));
         if (!fs.existsSync(adapterfile)) {
-            fs.writeFileSync(adapterfile, templ.template, 'utf8')
+            fs.writeFileSync(adapterfile, templ.template, { encoding: 'utf8'})
         }
 
         return adapterfile;
