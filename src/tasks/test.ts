@@ -381,7 +381,7 @@ export class KarmaTest implements ITask {
         }
         mkdirp.sync(path.dirname(adapterfile));
         if (!fs.existsSync(adapterfile)) {
-            fs.writeFileSync(adapterfile, templ.template, { encoding: 'utf8'})
+            fs.writeFileSync(adapterfile, templ.template); // { encoding: 'utf8'})
         }
 
         return adapterfile;
