@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { ITask, Operation, RunWay, ITaskConfig, IAssertOption, IEnvOption, ITaskContext, IContextDefine, taskdefine } from 'development-core';
+import { ITask, Operation, RunWay, ITaskConfig, taskdefine, IContextDefine, IAssertOption, IEnvOption, ITaskContext } from 'development-core';
 import { Clean } from './tasks/clean';
 import { StartServer } from './tasks/serve';
 import { KarmaTest } from './tasks/test';
@@ -15,8 +15,18 @@ export class WebDefine implements IContextDefine {
             option.assertsOrder = 0;
         }
         option.asserts = _.extend({
+            css: Operation.default | Operation.autoWatch,
+            jpeg: Operation.default | Operation.autoWatch,
+            jpg: Operation.default | Operation.autoWatch,
+            gif: Operation.default | Operation.autoWatch,
+            png: Operation.default | Operation.autoWatch,
+            ioc: Operation.default | Operation.autoWatch,
+            svg: Operation.default | Operation.autoWatch,
+            ttf: Operation.default | Operation.autoWatch,
+            woff: Operation.default | Operation.autoWatch,
+            eot: Operation.default | Operation.autoWatch,
             ts: 'development-assert-ts',
-            js: 'development-assert-js'
+            js: Operation.default | Operation.autoWatch
         }, option.asserts || {});
 
 

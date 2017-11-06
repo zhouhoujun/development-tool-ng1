@@ -1,4 +1,4 @@
-import { ITask, ITaskConfig, IAssertOption, IEnvOption, ITaskContext, IContextDefine } from 'development-core';
+import { ITask, ITaskConfig, IContextDefine, IAssertOption, IEnvOption, ITaskContext } from 'development-core';
 export * from './WebTaskOption';
 export declare class WebDefine implements IContextDefine {
     loadConfig(option: IAssertOption, env: IEnvOption): ITaskConfig;
